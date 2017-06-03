@@ -1,0 +1,43 @@
+﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+
+namespace NetCoreData.Dapper
+{
+    public interface IDapperHelper<T> where T : class
+    {
+        IDbConnection Connection { get; }
+
+        IDbTransaction DbTransaction { get; }
+
+        #region CRUD
+
+        void AddModel(T entity, IDbTransaction dbTrans=null);
+
+        void AddModels(IEnumerable<T> entities, IDbTransaction dbTrans = null);
+
+        void DeleteModel(T entity, IDbTransaction dbTrans = null);
+
+        void DeleteModel(object key, IDbTransaction dbTrans = null);
+
+        void ModifyModel(T entity, IDbTransaction dbTrans = null);
+
+        void ModifyModels(IEnumerable<T> entities, IDbTransaction dbTrans = null);
+
+        T GetModel(object key);
+
+        T GetModel(string sql, params DbParameter[] parmeters);
+
+        IEnumerable<T> GetList(string sql, params DbParameter[] parmeters);
+
+        #endregion
+
+        #region query
+
+        long GetCount(string sql, params DbParameter[] parmeters);
+
+        #endregion
+
+
+    }
+}
