@@ -1,0 +1,36 @@
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Demo1</title>
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <form class="layui-form" action="">
+        <label class="layui-form-label">性别：</label>
+        <div class="layui-input-inline">
+            <select name="interest">
+                <option value=""></option>
+                <option value="0">写作</option>
+                <option value="1" selected="">阅读</option>
+                <option value="2">游戏</option>
+                <option value="3">音乐</option>
+                <option value="4">旅行</option>
+            </select>
+        </div>
+    </form>
+    <script src="~/layui/layui.js"></script>
+    <script>
+        layui.use(['form'],
+            function () {
+                var form = layui.form();
+            });
+    </script>
+</body>
+</html>

@@ -7,7 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetCoreRepository;
+using NetCoreRepository.Impl;
+using NetCoreRepository.Interface;
 using NetCoreService;
+using NetCoreService.Impl;
+using NetCoreService.Interface;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using WebApplication1.Codes;
@@ -45,10 +49,11 @@ namespace WebApplication1
 
             //注释业务处理模块，for sql server
             services.AddSingleton<IUserRepository>(new UserRepository(CreateDbConnection()));
+            services.AddSingleton<ISysUserRepository>(new SysUserRepository(CreateDbConnection()));
 
 
             services.AddSingleton<IUserService,UserService>();
-
+            services.AddSingleton<ISysUserService, SysUserService>();
 
             // Add framework services.
             services.AddMvc();

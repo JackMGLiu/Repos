@@ -12,5 +12,10 @@ namespace WebApplication1.Controllers
         {
             return "This is my default action...";
         }
+
+        public IActionResult Demo1()
+        {
+            return View();
+        }
     }
 }
