@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,8 +11,10 @@ using NetCoreRepository;
 using NetCoreRepository.Impl;
 using NetCoreRepository.Interface;
 using NetCoreService;
+using NetCoreService.DTO;
 using NetCoreService.Impl;
 using NetCoreService.Interface;
+using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using WebApplication1.Codes;
@@ -21,6 +24,9 @@ namespace WebApplication1
 {
     public class Startup
     {
+        //AutoMapper
+        private MapperConfiguration _mapperConfiguration { get; set; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -29,9 +35,16 @@ namespace WebApplication1
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            _mapperConfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfileConfiguration());
+            });
         }
 
         public IConfigurationRoot Configuration { get; }
+
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -41,6 +54,10 @@ namespace WebApplication1
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             //连接字符串
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+
+            //AutoMapper
+            services.AddSingleton<IMapper>(sp => _mapperConfiguration.CreateMapper());
+            //services.AddAutoMapper();
 
             //services.AddSingleton(typeof(ISqlHelper<>), typeof(SqlHelper<>));
             //services.AddSingleton<IDbConnection>(CreateDbConnection());
@@ -56,7 +73,16 @@ namespace WebApplication1
             services.AddSingleton<ISysUserService, SysUserService>();
 
             // Add framework services.
-            services.AddMvc();
+            //services.AddMvc();
+            //处理json序列化后字母大小写问题
+            services.AddMvc().AddJsonOptions(op =>
+            {
+                op.SerializerSettings.ContractResolver =
+                    new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                op.SerializerSettings.DateFormatString = "yyyy-MM-dd";
+                //忽略循环引用
+                //op.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

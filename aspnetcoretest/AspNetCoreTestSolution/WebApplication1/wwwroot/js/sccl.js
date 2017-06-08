@@ -96,26 +96,26 @@ function addTab(cur) {
                 var m = cur;
                 while ((hidewidth - $(m).outerWidth()) > ($(".tab-nav-content").outerWidth() - navWidth)) {
                     hidewidth -= $(m).prev().outerWidth();
-                    m = $(m).prev()
+                    m = $(m).prev();
                 }
             }
         } else {
             if (prev_all > (navWidth - $(cur).outerWidth(true) - $(cur).prev().outerWidth(true))) {
-                hidewidth = prev_all - $(cur).prev().outerWidth(true)
+                hidewidth = prev_all - $(cur).prev().outerWidth(true);
             }
         }
     }
     $(".tab-nav-content").animate({
         marginLeft: 0 - hidewidth + "px"
     },
-        "fast")
+        "fast");
 }
 
 /*获取宽度*/
 function tabWidth(tabarr) {
     var allwidth = 0;
     $(tabarr).each(function () {
-        allwidth += $(this).outerWidth(true)
+        allwidth += $(this).outerWidth(true);
     });
     return allwidth;
 }
@@ -139,7 +139,7 @@ function leftBtnFun() {
     var navWidth = $(".layout-main-tab").outerWidth(true) - other_width;//可视宽度
     var hidewidth = 0;
     if ($(".tab-nav-content").width() < navWidth) {
-        return false
+        return false;
     } else {
         var tabIndex = $(".content-tab:first");
         var n = 0;
@@ -169,7 +169,7 @@ function rightBtnFun() {
     var navWidth = $(".layout-main-tab").outerWidth(true) - other_width;//可视宽度
     var hidewidth = 0;
     if ($(".tab-nav-content").width() < navWidth) {
-        return false
+        return false;
     } else {
         var tabIndex = $(".content-tab:first");
         var n = 0;
@@ -199,7 +199,7 @@ function navChange() {
         $(".body-iframe").each(function () {
             if ($(this).data("id") == k) {
                 $(this).show().siblings(".body-iframe").hide();
-                return false
+                return false;
             }
         });
         $(this).addClass("active").siblings(".content-tab").removeClass("active");
@@ -218,7 +218,7 @@ function closePage() {
             $(".body-iframe").each(function () {
                 if ($(this).data("id") == next_url) {
                     $(this).show().siblings(".body-iframe").hide();
-                    return false
+                    return false;
                 }
             });
             var n = parseInt($(".tab-nav-content").css("margin-left"));
@@ -226,13 +226,13 @@ function closePage() {
                 $(".tab-nav-content").animate({
                     marginLeft: (n + cur_width) + "px"
                 },
-                    "fast")
+                    "fast");
             }
             $(this).parents(".content-tab").remove();
             $(".body-iframe").each(function () {
                 if ($(this).data("id") == url) {
                     $(this).remove();
-                    return false
+                    return false;
                 }
             })
         }
@@ -242,14 +242,14 @@ function closePage() {
             $(".body-iframe").each(function () {
                 if ($(this).data("id") == prev_url) {
                     $(this).show().siblings(".body-iframe").hide();
-                    return false
+                    return false;
                 }
             });
             $(this).parents(".content-tab").remove();
             $(".body-iframe").each(function () {
                 if ($(this).data("id") == url) {
                     $(this).remove();
-                    return false
+                    return false;
                 }
             })
         }
@@ -258,10 +258,10 @@ function closePage() {
         $(".body-iframe").each(function () {
             if ($(this).data("id") == url) {
                 $(this).remove();
-                return false
+                return false;
             }
         });
-        addTab($(".content-tab.active"))
+        addTab($(".content-tab.active"));
     }
     return false;
 }
@@ -302,23 +302,23 @@ function initMenu(menu, parent) {
         var item = menu[i];
         var str = "";
         try {
-            if (item.isHeader == "1") {
-                str = "<li class='menu-header'>" + item.menuName + "</li>";
+            if (item.IsHeader == "1") {
+                str = "<li class='menu-header'>" + item.MenuName + "</li>";
                 $(parent).append(str);
-                if (item.children.length !== 0) {
-                    initMenu(item.children, parent);
+                if (item.Children.length !== 0) {
+                    initMenu(item.Children, parent);
                 }
             } else {
-                item.icon == "" ? item.icon = "&#xe610" : item.icon = item.icon;
-                if (item.children === null || item.children===undefined) {
-                    str = "<li><a href='" + item.linkUrl + "'><i class='icon-font'>" + item.icon + "</i><span>" + item.menuName + "</span></a></li>";
+                item.Icon == "" ? item.Icon = "&#xe610" : item.Icon = item.Icon;
+                if (item.Children === null || item.Children === undefined) {
+                    str = "<li><a href='" + item.LinkUrl + "'><i class='icon-font'>" + item.Icon + "</i><span>" + item.MenuName + "</span></a></li>";
                     $(parent).append(str);
                 } else {
-                    str = "<li><a href='" + item.linkUrl + "'><i class='icon-font '>" + item.icon + "</i><span>" + item.menuName + "</span><i class='icon-font icon-right'>&#xe60b;</i></a>";
-                    str += "<ul class='menu-item-child' id='menu-child-" + item.menuId + "'></ul></li>";
+                    str = "<li><a href='" + item.LinkUrl + "'><i class='icon-font '>" + item.Icon + "</i><span>" + item.MenuName + "</span><i class='icon-font icon-right'>&#xe60b;</i></a>";
+                    str += "<ul class='menu-item-child' id='menu-child-" + item.MenuId + "'></ul></li>";
                     $(parent).append(str);
-                    var childParent = $("#menu-child-" + item.menuId);
-                    initMenu(item.children, childParent);
+                    var childParent = $("#menu-child-" + item.MenuId);
+                    initMenu(item.Children, childParent);
                 }
             }
         } catch (e) { }
@@ -621,7 +621,7 @@ $(function () {
         dataType: 'json',
         success: function (data) {
             if (data.length !== 0) {
-                var res = toTreeData(data, 'menuId', 'parentId', 'children');
+                var res = toTreeData(data, 'MenuId', 'ParentId', 'Children');
                 initMenu(res, $(".side-menu"));
                 $(".side-menu > li").addClass("menu-item");
             }

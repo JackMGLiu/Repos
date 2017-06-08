@@ -1,0 +1,77 @@
+﻿//弹窗取值
+
+                //$.get('/sysuser/form', null, function (form) {
+                //    layer.open({
+                //        type: 1,
+                //        title: '添加表单',
+                //        content: form,
+                //        btn: ['保存', '取消'],
+                //        area: ['82%', '90%'],
+                //        maxmin: true,
+                //        yes: function (index, layero) {
+                //            //console.log(index);
+                //            //var f = form.find('form');
+
+                //            var f = $(layero).find("form");
+                //            //console.log(f);
+                //            var name = f.find('#UserName');
+                //            console.log(name.val());
+
+                //            //var res = window["layui-layer-iframe" + index].demo1();
+
+                //            window["layui-layer-iframe" + index].demo1();
+                //            //监听提交
+                //            //form.on('submit(demo1)', function (data) {
+                //            //    layer.alert(JSON.stringify(data.field), {
+                //            //        title: '最终的提交信息'
+                //            //    })
+                //            //    return false;
+                //            //});
+
+                //        },
+                //        full: function (elem) {
+                //            var win = window.top === window.self ? window : parent.window;
+                //            $(win).on('resize', function () {
+                //                var $this = $(this);
+                //                elem.width($this.width()).height($this.height()).css({
+                //                    top: 0,
+                //                    left: 0
+                //                });
+                //                elem.children('div.layui-layer-content').height($this.height() - 95);
+                //            });
+                //        }
+                //    });
+                //});
+
+
+//弹框编辑
+
+                    layer.open({
+                        type: 2,
+                        title: title,
+                        content: '/sysuser/form?key=' + key,
+                        area: ['82%', '90%'],
+                        maxmin: true,
+                        success: function (layero, index) {
+                            var body = layer.getChildFrame('body', index); //这样获取iframe中的body
+                            body.contents().find("#UserId").val(res.UserId);
+                            body.contents().find("#UserName").val(res.UserName);
+                            body.contents().find("#RealName").val(res.RealName);
+                            body.contents().find("#NickName").val(res.NickName);
+                            body.contents().find("#Age").val(res.Age);
+                            //body.contents().find("#Gender").val(res.Gender); //
+                            body.contents().find("#Gender").find("option[value=" + res.Gender+"]").attr("selected", true);
+                            body.contents().find("#Nation").val(res.Nation); //
+                            //body.contents().find("#StatusVal").val(res.Status); //
+                            body.contents().find("#Status").val(res.Status); //
+                            body.contents().find("#BirthDay").val(res.BirthDay);
+                            body.contents().find("#CardId").val(res.CardId);
+                            body.contents().find("#Phone").val(res.Phone);
+                            body.contents().find("#Mobile").val(res.Mobile);
+                            body.contents().find("#Email").val(res.Email);
+                            body.contents().find("#QQ").val(res.QQ);
+                            body.contents().find("#WeChat").val(res.WeChat);
+                            body.contents().find("#Address").val(res.Address);
+                            body.contents().find("#Description").val(res.Description);
+                        }
+                    });

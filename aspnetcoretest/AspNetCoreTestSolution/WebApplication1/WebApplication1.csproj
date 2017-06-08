@@ -36,6 +36,8 @@
     <Content Include="wwwroot\images\login-bg-7.jpg" />
     <Content Include="wwwroot\images\login-bg-8.jpg" />
     <Content Include="wwwroot\images\login-bg-9.jpg" />
+    <Content Include="wwwroot\js\demo1.js" />
+    <Content Include="wwwroot\js\utils.js" />
     <Content Include="wwwroot\layui\css\layui.css" />
     <Content Include="wwwroot\layui\css\mobile.css" />
     <Content Include="wwwroot\layui\css\modules\code.css" />

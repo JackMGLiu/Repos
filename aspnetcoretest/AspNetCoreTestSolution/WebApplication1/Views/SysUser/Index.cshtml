@@ -44,144 +44,150 @@
             <legend>数据列表</legend>
         </fieldset>
         <div class="layui-field-box">
-            <table class="layui-table site-table table-hover">
+            <table id="users" class="layui-table site-table table-hover">
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="selected-all"></th>
-                        <th>所属分类</th>
-                        <th>标题</th>
-                        <th>作者</th>
-                        <th>创建时间</th>
-                        <th>浏览量</th>
-                        <th>状态</th>
-                        <th>排序值</th>
-                        <th>置顶</th>
+                        <th>用户名</th>
+                        <th>真实姓名</th>
+                        <th>添加时间</th>
+                        <th>添加人员</th>
                         <th>操作</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>Layui</td>
-                        <td>
-                            <a href="/manage/article_edit_1">演示站点发布成功啦。</a>
-                        </td>
-                        <td>Beginner</td>
-                        <td>2016-11-16 11:50</td>
-                        <td>1298</td>
-                        <td>正常</td>
-                        <td>99</td>
-                        <td style="text-align:center;"><i class="layui-icon" style="color:green;"></i></td>
-                        <td>
-                            <a href="/detail-1" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
-                            <a href="/manage/article_edit_1" class="layui-btn layui-btn-mini">编辑</a>
-                            <a href="javascript:;" data-id="1" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
-        @*<div class="admin-table-page">
-                <div id="page" class="page">
-                </div>
-            </div>*@
+        <div class="admin-table-page">
+            <div id="pagediv" class="page"></div>
+        </div>
     </div>
     <script src="~/layui/layui.js"></script>
-<script>
-    layui.use(['laypage', 'layer'], function () {
-        //var $ = layui.jquery;
-        var $ = layui.jquery,
-            laypage = layui.laypage,
+    <script>
+        var msgloading;
+        var $;
+        var layer;
+        layui.use(['laypage', 'layer'], function () {
+            //var $ = layui.jquery;
+            $ = layui.jquery;
+            laypage = layui.laypage;
             layer = layui.layer;
-
-        //layer = parent.layer === undefined ? layui.layer : parent.layer;
-        //$('input').iCheck({
-        //    checkboxClass: 'icheckbox_flat-green'
-        //});
-
-        $('#add').on('click', function () {
-            //$.get('/sysuser/form', null, function (form) {
-            //    layer.open({
-            //        type: 1,
-            //        title: '添加表单',
-            //        content: form,
-            //        btn: ['保存', '取消'],
-            //        area: ['82%', '90%'],
-            //        maxmin: true,
-            //        yes: function (index, layero) {
-            //            //console.log(index);
-            //            //var f = form.find('form');
-
-            //            var f = $(layero).find("form");
-            //            //console.log(f);
-            //            var name = f.find('#UserName');
-            //            console.log(name.val());
-
-            //            //var res = window["layui-layer-iframe" + index].demo1();
-
-            //            window["layui-layer-iframe" + index].demo1();
-            //            //监听提交
-            //            //form.on('submit(demo1)', function (data) {
-            //            //    layer.alert(JSON.stringify(data.field), {
-            //            //        title: '最终的提交信息'
-            //            //    })
-            //            //    return false;
-            //            //});
-
-            //        },
-            //        full: function (elem) {
-            //            var win = window.top === window.self ? window : parent.window;
-            //            $(win).on('resize', function () {
-            //                var $this = $(this);
-            //                elem.width($this.width()).height($this.height()).css({
-            //                    top: 0,
-            //                    left: 0
-            //                });
-            //                elem.children('div.layui-layer-content').height($this.height() - 95);
-            //            });
-            //        }
-            //    });
+            //layer = parent.layer === undefined ? layui.layer : parent.layer;
+            //$('input').iCheck({
+            //    checkboxClass: 'icheckbox_flat-green'
             //});
 
+            $('#add').on('click', function () {
+                layer.open({
+                    type: 2,
+                    title: '新增信息',
+                    content: '/sysuser/form',
+                    //btn: ['保存', '取消'],
+                    area: ['82%', '90%'],
+                    maxmin: true,
+                    //yes: function (index, layero) {
+                    //    $(layero).find('iframe')[0].contentWindow.formsubmit();
+                    //    //监听提交
+                    //    //form.on('submit(demo1)', function (data) {
+                    //    //    layer.alert(JSON.stringify(data.field), {
+                    //    //        title: '最终的提交信息'
+                    //    //    })
+                    //    //    return false;
+                    //    //});
+                    //},
+                    //btn2:function(index) {
+                    //    layer.close(index);
+                    //},
+                    full: function (elem) {
+                        var win = window.top === window.self ? window : parent.window;
+                        $(win).on('resize',
+                            function () {
+                                var $this = $(this);
+                                elem.width($this.width()).height($this.height()).css({
+                                    top: 0,
+                                    left: 0
+                                });
+                                elem.children('div.layui-layer-content').height($this.height() - 95);
+                            });
+                    },
+                    end: function () {
+                        bindGird();
+                    }
+                });
+            });
+
+            $('#search').on('click', function () {
+                layer.alert('你点击了搜索按钮');
+            });
+
+            /***初始化***/
+            bindGird();
+
+            function bindGird(obj) {
+                $.ajax({
+                    url: '/sysuser/getusers',
+                    data: { 'page': obj == null ? 1 : obj.curr },
+                    cache: false,
+                    beforeSend: function () {
+                        msgloading = layer.msg('正在加载数据...', {
+                            icon: 16,
+                            shade: 0.01
+                        });
+                    },
+                    complete: function () {
+                        layer.close(msgloading);
+                    },
+                    success: function (res) {
+                        if (res.Items) {
+                            if (res.Items.length > 0) {
+                                var reshtml = '';
+                                for (var i = 0; i < res.Items.length; i++) {
+                                    var d = '<tr>';
+                                    d += '<td><input type="checkbox" id="' + res.Items[i].UserId + '"></td>';
+                                    d += '<td>' + res.Items[i].UserName + '</td>';
+                                    d += '<td>' + res.Items[i].RealName + '</td>';
+                                    d += '<td>' + res.Items[i].CreateTime + '</td>';
+                                    d += '<td>' + res.Items[i].CreateUser + '</td>';
+                                    d += '<td>' +
+                                        '<a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a> ' +
+                                        '<a href="javascript:void(0);" class="layui-btn layui-btn-mini" onclick="showEdit(\'编辑信息 - (' + res.Items[i].RealName + ')\',\'' + res.Items[i].UserId + '\')">编辑</a> ' +
+                                        '<a href="javascript:;" data-id="1" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a></td>';
+                                    d += '</tr>';
+                                    reshtml += d;
+                                }
+                                $('#users tbody').html('');
+                                $('#users tbody').append(reshtml);
+                            }
+                        }
+                        laypage({
+                            cont: 'pagediv',
+                            pages: res.TotalPageCount, //总页数
+                            curr: res.CurrentPage, //当前页
+                            groups: 5, //连续显示分页数
+                            jump: function (obj, first) {
+                                //var curr = obj.curr;
+                                if (!first) {
+                                    bindGird(obj);
+                                }
+                            }
+                        });
+                    },
+                    error: function (msg) {
+                        console.log(msg);
+                    }
+                });
+            }
+        });
+
+        function showEdit(title, key) {
             layer.open({
                 type: 2,
-                title: '添加表单',
-                content: '/sysuser/form',
-                //btn: ['保存', '取消'],
+                title: title,
+                content: '/sysuser/form?key=' + key,
                 area: ['82%', '90%'],
-                maxmin: true,
-                //yes: function (index, layero) {
-                //    $(layero).find('iframe')[0].contentWindow.formsubmit();
-                //    //监听提交
-                //    //form.on('submit(demo1)', function (data) {
-                //    //    layer.alert(JSON.stringify(data.field), {
-                //    //        title: '最终的提交信息'
-                //    //    })
-                //    //    return false;
-                //    //});
-                //},
-                //btn2:function(index) {
-                //    layer.close(index);
-                //},
-                full: function (elem) {
-                    var win = window.top === window.self ? window : parent.window;
-                    $(win).on('resize', function () {
-                        var $this = $(this);
-                        elem.width($this.width()).height($this.height()).css({
-                            top: 0,
-                            left: 0
-                        });
-                        elem.children('div.layui-layer-content').height($this.height() - 95);
-                    });
-                }
+                maxmin: true
             });
-        });
-
-        $('#search').on('click', function () {
-            layer.alert('你点击了搜索按钮');
-        });
-    });
-
-</script>
+        }
+    </script>
 </body>
 </html>

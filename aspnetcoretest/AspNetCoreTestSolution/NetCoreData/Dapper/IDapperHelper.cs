@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using NetCoreData.Models;
 
 namespace NetCoreData.Dapper
 {
@@ -26,13 +27,15 @@ namespace NetCoreData.Dapper
 
         T GetModel(object key);
 
-        T GetModel(string sql, params DbParameter[] parmeters);
+        T GetModelBySql(string sql, params DbParameter[] parmeters);
 
         IEnumerable<T> GetList(string sql, params DbParameter[] parmeters);
 
         #endregion
 
         #region query
+
+        PageDataView<T> GetPageData<T>(PageCriteria criteria, object param = null);
 
         long GetCount(string sql, params DbParameter[] parmeters);
 

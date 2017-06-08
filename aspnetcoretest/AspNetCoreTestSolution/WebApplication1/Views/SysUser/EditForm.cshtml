@@ -6,14 +6,15 @@
 {
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
+    <script src="~/js/utils.js"></script>
     <script>
         var msgloading;
-
+        var form, laydate;
         layui.use(['form', 'upload', 'laydate'],
             function () {
                 var $ = layui.jquery;
-                var form = layui.form();
-                var laydate;
+                form = layui.form();
+                //var laydate;
                 laydate = layui.laydate;
                 //layui.upload({
                 //    url: '/test/upload.json',
@@ -47,29 +48,36 @@
                     }
                 });
 
-                //监听指定开关
-                form.on('switch(switchTest)', function (data) {
-                    var ischeck = data.elem.checked;
-                    if (ischeck) {
-                        $('#Status').val(1);
-                    } else {
-                        $('#Status').val(0);
-                    }
+                $(function () {
+                    init();
                 });
+
+                //监听指定开关
+                form.on('switch(switchTest)',
+                    function (data) {
+                        var ischeck = data.elem.checked;
+                        if (ischeck) {
+                            $('#Status').val(1);
+                        } else {
+                            $('#Status').val(0);
+                        }
+                    });
 
 
                 form.on('submit(savedata)',
                     function (data) {
+                        var key = $.request('key');
                         $(this).ajaxSubmit({
                             type: 'post',
-                            url: '/sysuser/savedata',
+                            url: '/sysuser/savedata?key=' + key,
                             dataType: 'json',
                             data: data.field,
                             beforeSend: function () {
-                                msgloading = layer.msg('正在保存数据...', {
-                                    icon: 16,
-                                    shade: 0.01
-                                });
+                                msgloading = layer.msg('正在保存数据...',
+                                    {
+                                        icon: 16,
+                                        shade: 0.01
+                                    });
                             },
                             complete: function () {
                                 layer.close(msgloading);
@@ -77,7 +85,7 @@
                             success: function (res) {
                                 if (res.type == 1) {
                                     layer.alert(res.msg,
-                                        function() {
+                                        function () {
                                             var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                                             parent.layer.close(index);
                                         });
@@ -88,7 +96,38 @@
                         });
                         return false;
                     });
+
             });
+
+
+        //初始化数据
+        function init() {
+            var key = $.request('key');
+            if (!$.isNullOrEmpty(key)) {
+                $.ajax({
+                    url: '/sysuser/getuser',
+                    data: { 'key': key },
+                    cache: false,
+                    beforeSend: function () {
+                        msgloading = layer.msg('正在加载数据...',
+                            {
+                                icon: 16,
+                                shade: 0.01
+                            });
+                    },
+                    complete: function () {
+                        layer.close(msgloading);
+                    },
+                    success: function (data) {
+                        //if (data.Status == 1) {
+                        //    $('#StatusVal').attr('checked',true);
+                        //}
+                        $('#form1').SetWebControls(data);
+                        form.render();
+                    }
+                });
+            }
+        }
 
         var aCity = {
             11: "北京",
@@ -164,7 +203,7 @@
                 <div class="site-demo-upload">
                     <img id="LAY_demo_upload" src="~/images/defaulthead.jpg">
                     <div class="site-demo-upbar">
-                        @*<input type="file" name="file" class="layui-upload-file" id="test">*@
+                        <input type="file" name="file" class="layui-upload-file" id="test">
                     </div>
                 </div>
             </div>
@@ -172,6 +211,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">用户名：</label>
             <div class="layui-input-inline">
+                <input type="hidden" id="UserId" name="UserId" />
                 <input type="text" id="UserName" name="UserName" lay-verify="fname" autocomplete="off" placeholder="请输入用户名" class="layui-input" />
             </div>
             <label class="layui-form-label">真实姓名：</label>
@@ -216,7 +256,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">出生日期：</label>
             <div class="layui-input-inline">
-                <input type="text" name="BirthDay" id="BirthDay" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({ elem: this })" />
+                <input type="text" name="BirthDay" id="BirthDay" lay-verify="date" placeholder="yyyy-mm-dd" autocomplete="off" class="layui-input" onclick="layui.laydate({ elem: this,format: 'YYYY-MM-DD',istime: false})" />
             </div>
             <label class="layui-form-label">身份证号：</label>
             <div class="layui-input-inline">
@@ -248,8 +288,8 @@
             </div>
             <label class="layui-form-label">当前状态：</label>
             <div class="layui-input-inline">
-                <input type="checkbox" id="StatusVal" name="StatusVal" lay-skin="switch" lay-filter="switchTest" title="当前状态" lay-text="开启|关闭" />
-                <input type="hidden" id="Status" name="Status" value="0" />
+                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchTest" title="当前状态" lay-text="开启|关闭" />
+                @*<input type="hidden" id="Status" name="Status" value="0" />*@
             </div>
         </div>
         <div class="layui-form-item">
