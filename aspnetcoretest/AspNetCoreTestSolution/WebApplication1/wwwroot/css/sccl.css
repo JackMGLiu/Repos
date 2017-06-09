@@ -288,7 +288,8 @@ a {
     left: 0;
     right: 0;
     overflow: auto;
-    margin: 0 0 0 10px;
+    /*margin: 0 0 0 10px;*/
+    margin: 0px;
 }
 
 .layout-footer {

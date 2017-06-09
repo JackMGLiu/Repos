@@ -11,5 +11,6 @@ namespace NetCoreService.DTO.FormatModel
         public string code { get; set; }
         public string parentid { get; set; }
         public int? isnav { get; set; }
+        public int? islast { get; set; }
     }
 }

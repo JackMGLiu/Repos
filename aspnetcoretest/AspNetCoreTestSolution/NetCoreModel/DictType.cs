@@ -12,6 +12,7 @@ namespace NetCoreModel
         public string DictTypeCode { get; set; }
         public string DictTypeName { get; set; }
         public int? IsNav { get; set; }
+        public int? IsLast { get; set; }
         public int? SortCode { get; set; }
         public int Status { get; set; }
         public int IsDelete { get; set; }

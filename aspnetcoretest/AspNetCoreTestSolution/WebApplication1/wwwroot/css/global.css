@@ -1144,6 +1144,7 @@ body .site-demo-nav .layui-nav-item {
     }
 
         .admin-table-page .page .layui-laypage {
+            /*margin: 6px 0 0 0;*/
             margin: 6px 0 0 0;
         }
 

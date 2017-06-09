@@ -1,6 +1,6 @@
 /*左侧菜单点击*/
 $(".side-menu").on('click', 'li a', function (e) {
-    var animationSpeed = 300;
+    var animationSpeed = 500;
     var $this = $(this);
     var checkElement = $this.next();
 
@@ -77,7 +77,7 @@ function addIframe(cur) {
         var tab = "<a href='javascript:;' class='content-tab active' data-id='" + h + "'>" + label + " <i class='icon-font'>&#xe617;</i></a>";
         $(".content-tab").removeClass("active");
         $(".tab-nav-content").append(tab);
-        var iframe = "<iframe class='body-iframe' name='iframe" + m + "' width='100%' height='99%' src='" + h + "' frameborder='0' data-id='" + h + "' seamless></iframe>";
+        var iframe = "<iframe class='body-iframe' name='iframe" + m + "' width='100%' height='99.4%' src='" + h + "' frameborder='0' data-id='" + h + "' seamless></iframe>";
         $(".layout-main-body").find("iframe.body-iframe").hide().parents(".layout-main-body").append(iframe);
         addTab($(".content-tab.active"));
     }

@@ -19,13 +19,14 @@ namespace WebApplication1.Controllers
         [Route("dict/getlist")]
         public IActionResult GetDictTypes()
         {
-            var data = DataTypeList().Where(dt=>dt.IsNav==1).OrderBy(d => d.SortCode).Select(s => new TreeModel
+            var data = DataTypeList().Where(dt => dt.IsNav == 1).OrderBy(d => d.SortCode).Select(s => new TreeModel
             {
                 id = s.DictTypeId,
                 code = s.DictTypeCode,
                 parentid = s.ParentId,
                 name = s.DictTypeName,
-                isnav = s.IsNav
+                isnav = s.IsNav,
+                islast = s.IsLast
             });
             return Json(data);
         }
@@ -43,6 +44,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "Basics",
                     DictTypeName = "基础数据",
                     IsNav = 1,
+                    IsLast = 0,
                     SortCode = 0
                 },
                 new DictType
@@ -52,6 +54,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "SysDict",
                     DictTypeName = "系统数据",
                     IsNav = 1,
+                    IsLast = 0,
                     SortCode = 1
                 },
                 new DictType
@@ -61,6 +64,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "Gender",
                     DictTypeName = "性别",
                     IsNav = 1,
+                    IsLast = 1,
                     SortCode = 0
                 },
                 new DictType
@@ -70,6 +74,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "man",
                     DictTypeName = "男",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 1
                 },
                 new DictType
@@ -79,6 +84,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "woman",
                     DictTypeName = "女",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 2
                 },
                 new DictType
@@ -88,6 +94,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "education",
                     DictTypeName = "学历",
                     IsNav = 1,
+                    IsLast = 1,
                     SortCode = 0
                 },
                 new DictType
@@ -97,6 +104,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "xx",
                     DictTypeName = "小学",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 1
                 },
                 new DictType
@@ -106,6 +114,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "cz",
                     DictTypeName = "初中",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 2
                 },
                 new DictType
@@ -115,6 +124,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "gz",
                     DictTypeName = "高中",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 3
                 },
                 new DictType
@@ -124,6 +134,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "dx",
                     DictTypeName = "大学",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 4
                 },
                 new DictType
@@ -133,6 +144,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "status",
                     DictTypeName = "状态",
                     IsNav = 1,
+                    IsLast = 1,
                     SortCode = 0
                 },
                 new DictType
@@ -142,6 +154,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "enable",
                     DictTypeName = "启用",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 1
                 },
                 new DictType
@@ -151,6 +164,7 @@ namespace WebApplication1.Controllers
                     DictTypeCode = "unenable",
                     DictTypeName = "禁用",
                     IsNav = 0,
+                    IsLast = 1,
                     SortCode = 2
                 }
             };
