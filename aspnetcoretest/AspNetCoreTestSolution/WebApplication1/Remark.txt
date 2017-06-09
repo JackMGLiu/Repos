@@ -75,3 +75,11 @@
                             body.contents().find("#Description").val(res.Description);
                         }
                     });
+
+//table checkbox
+
+   （a）layui\lay\dest 里的 layui.all.js文件
+
+   （b）layui\lay\modules里的 form.js 文件
+
+   （c）layui\css 里的 layui.css 文件
