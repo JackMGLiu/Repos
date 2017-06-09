@@ -98,5 +98,25 @@ namespace NetCoreService.Impl
             }
             return flag;
         }
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="key">用户主键</param>
+        /// <returns></returns>
+        public bool DeleteUser(string key)
+        {
+            bool flag = false;
+            try
+            {
+                _sysUserRepository.DeleteModel(key);
+                flag = true;
+            }
+            catch (Exception ex)
+            {
+                flag = false;
+            }
+            return flag;
+        }
     }
 }

@@ -115,7 +115,7 @@ namespace WebApplication1.Controllers
                     ParentId = "12",
                     MenuName = "»ù´¡Êý¾Ý",
                     Icon = "",
-                    LinkUrl = "/Main/BasicData",
+                    LinkUrl = "/dict/list",
                     IsHeader = 0,
                     SortCode = 0
                 },

@@ -20,6 +20,13 @@ namespace NetCoreService.Interface
         bool EditUser(SysUser model);
 
         /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="key">用户主键</param>
+        /// <returns></returns>
+        bool DeleteUser(string key);
+
+        /// <summary>
         /// 根据主键获取用户实体
         /// </summary>
         /// <param name="key">主键</param>

@@ -57,7 +57,7 @@
                         <th>操作</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody id="utbody"></tbody>
             </table>
         </div>
         <div class="admin-table-page">
@@ -66,86 +66,120 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/layui/layui/lay/dest/layui.all.js"></script>
+    <script src="~/js/utils.js"></script>
     @*<script src="~/layui/layui.js"></script>*@
     @*<script src="~/lib/iCheck/icheck.js"></script>*@
+    <script id="tabletempl" type="text/html">
+        {{#  layui.each(d.Items, function(index, item){ }}
+        <tr>
+            <td><input type="checkbox" name="usercheck" id={{item.UserId}} lay-skin="primary" /></td>
+            <td>{{item.UserName}}</td>
+            <td>{{item.RealName}}</td>
+            <td>
+                {{#  if(item.Status===1){ }}
+                <i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>
+                {{#  }else{ }}
+                <i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>
+                {{#  }}}
+            </td>
+            <td>{{item.CreateTime}}</td>
+            <td>{{item.CreateUser}}</td>
+            <td>
+                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
+                <a href="javascript:void(0);" data-id="{{item.UserId}}" class="layui-btn layui-btn-mini" onclick="showEdit('编辑信息 ({{item.UserName}})','{{item.UserId}}');">编辑</a>
+                <a href="javascript:void(0);" id="{{item.UserId}}" data-id="{{item.UserId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
+            </td>
+        </tr>
+        {{#  }); }}
+    </script>
     <script>
         var msgloading;
         var layer;
         var form;
+        var laytpl;
+        layui.use(['laypage', 'layer', 'form', 'laytpl'],
+            function () {
+                laypage = layui.laypage;
+                layer = layui.layer;
+                form = layui.form();
+                laytpl = layui.laytpl;
+                //layer = parent.layer === undefined ? layui.layer : parent.layer;
 
-        layui.use(['laypage', 'layer', 'form'], function () {
-            laypage = layui.laypage;
-            layer = layui.layer;
-            form = layui.form();
-            //layer = parent.layer === undefined ? layui.layer : parent.layer;
+                //全选
+                form.on('checkbox(allChoose)',
+                    function (data) {
+                        var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                        child.each(function (index, item) {
+                            item.checked = data.elem.checked;
+                        });
+                        form.render('checkbox');
+                    });
 
-            //全选
-            form.on('checkbox(allChoose)', function (data) {
-                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
-                child.each(function (index, item) {
-                    item.checked = data.elem.checked;
-                });
-                form.render('checkbox');
-            });
+                $('#add').on('click',
+                    function () {
+                        layer.open({
+                            type: 2,
+                            anim: 1,
+                            title: '新增信息',
+                            content: '/sysuser/form',
+                            //btn: ['保存', '取消'],
+                            area: ['82%', '90%'],
+                            maxmin: true,
+                            full: function (elem) {
+                                var win = window.top === window.self ? window : parent.window;
+                                $(win).on('resize',
+                                    function () {
+                                        var $this = $(this);
+                                        elem.width($this.width()).height($this.height()).css({
+                                            top: 0,
+                                            left: 0
+                                        });
+                                        elem.children('div.layui-layer-content').height($this.height() - 95);
+                                    });
+                            },
+                            end: function () {
+                                bindGird();
+                            }
+                        });
+                    });
 
-            $('#add').on('click', function () {
-                layer.open({
-                    type: 2,
-                    title: '新增信息',
-                    content: '/sysuser/form',
-                    //btn: ['保存', '取消'],
-                    area: ['82%', '90%'],
-                    maxmin: true,
-                    full: function (elem) {
-                        var win = window.top === window.self ? window : parent.window;
-                        $(win).on('resize',
+                //批量删除
+                $('#delete').click(function () {
+                    var chk_value = [];
+                    $('input[name="usercheck"]:checked').each(function () {
+                        chk_value.push($(this).attr('id'));
+                    });
+                    if (chk_value.length !== 0) {
+                        layer.confirm('是否要删除这<span style="color: red; font-weight: bold;">&nbsp;' +
+                            chk_value.length +
+                            '&nbsp;</span>条数据？',
+                            {
+                                title: '删除确认',
+                                btn: ['删除', '取消']
+                            },
                             function () {
-                                var $this = $(this);
-                                elem.width($this.width()).height($this.height()).css({
-                                    top: 0,
-                                    left: 0
-                                });
-                                elem.children('div.layui-layer-content').height($this.height() - 95);
+                                layer.msg('已删除！', { icon: 1 });
+                            },
+                            function () {
+                                return;
                             });
-                    },
-                    end: function () {
-                        bindGird();
+                    } else {
+                        layer.alert('您还没有选择数据！',
+                            {
+                                icon: 0,
+                                title: '提示信息'
+                            });
                     }
                 });
-            });
 
-            //删除
-            $('#delete').click(function () {
-                var chk_value = [];
-                $('input[name="usercheck"]:checked').each(function () {
-                    chk_value.push($(this).attr('id'));
-                });
-                if (chk_value.length !== 0) {
-                    layer.confirm('是否要删除这<span style="color: red; font-weight: bold;">&nbsp;' + chk_value.length + '&nbsp;</span>条数据？', {
-                        title: '删除确认',
-                        btn: ['删除', '取消']
-                    }, function () {
-                        layer.msg('已删除！', { icon: 1 });
-                    }, function () {
-                        return;
+                $('#search').on('click',
+                    function () {
+                        layer.alert('你点击了搜索按钮');
                     });
-                } else {
-                    layer.alert('您还没有选择数据！', {
-                        icon: 0,
-                        title: '提示信息'
-                    });
-                }
+
+                /***初始化***/
+                bindGird();
             });
-
-            $('#search').on('click', function () {
-                layer.alert('你点击了搜索按钮');
-            });
-
-            /***初始化***/
-            bindGird();
-
-
-        });
 
         function bindGird(obj) {
             $.ajax({
@@ -153,10 +187,11 @@
                 data: { 'page': obj == null ? 1 : obj.curr },
                 cache: false,
                 beforeSend: function () {
-                    msgloading = layer.msg('正在加载数据...', {
-                        icon: 16,
-                        shade: 0.01
-                    });
+                    msgloading = layer.msg('正在加载数据...',
+                        {
+                            icon: 16,
+                            shade: 0.01
+                        });
                 },
                 complete: function () {
                     layer.close(msgloading);
@@ -164,30 +199,12 @@
                 success: function (res) {
                     if (res.Items) {
                         if (res.Items.length > 0) {
-                            var reshtml = '';
-                            for (var i = 0; i < res.Items.length; i++) {
-                                var d = '<tr>';
-                                d += '<td><input type="checkbox" name="usercheck" id="' + res.Items[i].UserId + '" lay-skin="primary" /></td>';
-                                d += '<td>' + res.Items[i].UserName + '</td>';
-                                d += '<td>' + res.Items[i].RealName + '</td>';
-                                //if (res.Items[i].Status == 1) {
-                                //    d += '<i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>';
-                                //} else {
-                                //    d += '<i class="layui-icon menu-isshow menu-isshow_y">&#x1006;</i>';
-                                //}
-                                d += '<td>' + (res.Items[i].Status == 1 ? '<i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>' : '<i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>') + '</td>';
-                                d += '<td>' + res.Items[i].CreateTime + '</td>';
-                                d += '<td>' + res.Items[i].CreateUser + '</td>';
-                                d += '<td>' +
-                                    '<a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>' +
-                                    '<a href="javascript:void(0);" class="layui-btn layui-btn-mini" onclick="showEdit(\'编辑信息 - (' + res.Items[i].RealName + ')\',\'' + res.Items[i].UserId + '\')">编辑</a>' +
-                                    '<a href="javascript:;" data-id="1" data-opt="del" class="layui-btn layui-btn-danger layui-btn-mini">删除</a></td>';
-                                d += '</tr>';
-                                reshtml += d;
-                            }
-                            $('#users tbody').html('');
-                            $('#users tbody').append(reshtml);
-                            form.render('checkbox');
+                            var gettpl = document.getElementById('tabletempl').innerHTML;
+                            laytpl(gettpl).render(res,
+                                function (html) {
+                                    document.getElementById('utbody').innerHTML = html;
+                                    form.render('checkbox');
+                                });
                         }
                     }
                     laypage({
@@ -209,11 +226,11 @@
             });
         }
 
-
         function showEdit(title, key) {
             layer.open({
                 type: 2,
                 title: title,
+                anim: 2,
                 content: '/sysuser/form?key=' + key,
                 area: ['82%', '90%'],
                 maxmin: true,
@@ -233,6 +250,67 @@
                     bindGird();
                 }
             });
+        }
+
+
+        //delete
+        function delObj(obj) {
+            var key = obj.getAttribute('id');
+            if (!$.isNullOrEmpty(key)) {
+                layer.confirm('是否要删除这条数据？',
+                    {
+                        title: '删除确认',
+                        btn: ['删除', '取消']
+                    },
+                    function () {
+                        //执行删除操作
+                        $.ajax({
+                            type: 'post',
+                            url: '/sysuser/delete',
+                            data: { 'key': key },
+                            cache: false,
+                            beforeSend: function () {
+                                msgloading = layer.msg('正在删除数据...',
+                                    {
+                                        icon: 16,
+                                        shade: 0.01
+                                    });
+                            },
+                            complete: function () {
+                                layer.close(msgloading);
+                            },
+                            success: function (res) {
+                                if (res.type == 1) {
+                                    layer.alert(res.msg, bindGird);
+                                } else {
+                                    layer.alert(res.msg,
+                                        {
+                                            icon: 2,
+                                            title: '提示信息'
+                                        });
+                                }
+                            },
+                            error: function (msg) {
+                                layer.alert('系统错误，请重试！',
+                                    {
+                                        icon: 2,
+                                        title: '提示信息'
+                                    });
+                            }
+
+                        },
+                            function () {
+                                return;
+                            });
+                    });
+            } else {
+                layer.alert('数据是否存在？请刷新页面重试！',
+                    {
+                        icon: 0,
+                        title: '提示信息'
+                    });
+            }
+            return false;
         }
     </script>
 </body>

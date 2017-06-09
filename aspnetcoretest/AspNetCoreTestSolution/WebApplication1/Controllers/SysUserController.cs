@@ -113,7 +113,38 @@ namespace WebApplication1.Controllers
                         var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
                         return Json(json);
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, ex.Message);
+                throw;
+            }
+        }
 
+        [HttpPost("sysuser/delete")]
+        public IActionResult DelModelByKey(string key)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(key))
+                {
+                    var json = new { type = 0, data = "", msg = "数据是否存在？请刷新页面重试！", backurl = "" };
+                    return Json(json);
+                }
+                else
+                {
+                    var res = _sysUserService.DeleteUser(key);
+                    if (res)
+                    {
+                        var json = new { type = 1, data = "", msg = "删除完成！", backurl = "" };
+                        return Json(json);
+                    }
+                    else
+                    {
+                        var json = new { type = 0, data = "", msg = "删除失败！", backurl = "" };
+                        return Json(json);
+                    }
                 }
             }
             catch (Exception ex)

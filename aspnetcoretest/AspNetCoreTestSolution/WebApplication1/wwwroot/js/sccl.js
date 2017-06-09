@@ -31,7 +31,12 @@ $(".side-menu").on('click', 'li a', function (e) {
     //防止有链接跳转
     e.preventDefault();
 
+    //动画
+    //$('body,html').animate({ scrollTop: 0 }, 500);
+
     addIframe($this);
+
+    //return false;
 });
 
 /*添加iframe*/
@@ -76,6 +81,7 @@ function addIframe(cur) {
         $(".layout-main-body").find("iframe.body-iframe").hide().parents(".layout-main-body").append(iframe);
         addTab($(".content-tab.active"));
     }
+
     return false;
 }
 

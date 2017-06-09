@@ -67,6 +67,7 @@ namespace WebApplication1
             //注释业务处理模块，for sql server
             services.AddSingleton<IUserRepository>(new UserRepository(CreateDbConnection()));
             services.AddSingleton<ISysUserRepository>(new SysUserRepository(CreateDbConnection()));
+            services.AddSingleton<IDictTypeRepository>(new DictTypeRepository(CreateDbConnection()));
 
 
             services.AddSingleton<IUserService,UserService>();
