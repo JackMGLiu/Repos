@@ -4,46 +4,89 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
-using NetCoreRepository;
-using NetCoreService;
-using Newtonsoft.Json;
-using NLog;
+using NetCoreService.DTO.FormatModel;
 
 namespace WebApplication1.Controllers
 {
-    public class MainController : Controller
+    public class SysMenuController : Controller
     {
-        /// <summary>
-        /// 业务仓储类
-        /// </summary>99
-        //protected IUserRepository _userRepository;
-        protected IUserService _userService;
-        /// <summary>
-        /// 日志类
-        /// </summary>
-        protected Logger _log;
-        /// <summary>
-        /// 通用项目平台控制层实例
-        /// </summary>
-        /// <param name="userService">业务仓储类</param>
-        public MainController(IUserService userService)
-        {
-            _log = LogManager.GetCurrentClassLogger();
-            _userService = userService;
-        }
 
-        public IActionResult SysMain()
+        [Route("sysmenu/list")]
+        public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult GetMenus()
+        List<MenuModel> menudata = new List<MenuModel>();
+
+        [HttpGet("sysmenu/getmenus")]
+        public IActionResult GetData()
         {
-            var data = this.MenusData().OrderBy(m => m.SortCode);
-            return Json(data);
+            //var data = MenusData().OrderBy(m => m.SortCode);
+            var data = GetTreeData("0", MenusData());
+            GetTree(1, data, ref menudata);
+            return Json(menudata);
         }
 
         #region 模拟目录数据
+
+        public void GetTree(int length, List<TreeGridModel> data, ref List<MenuModel> resultData)
+        {
+            string prefix =string.Empty;
+            if (length > 1)
+            {
+                string nbsp = "&nbsp;";
+                for (var i = 0; i < length; i++)
+                {
+                    nbsp += "&nbsp;&nbsp;";
+                }
+                prefix = nbsp+"|";
+            }
+            else
+            {
+                prefix = "|";
+            }
+            for (var i = 0; i < length; i++)
+            {
+                prefix += "-";
+            }
+            MenuModel model;
+            foreach (var item in data)
+            {
+                model = new MenuModel();
+                model.Id = item.Id;
+                model.Name = prefix + item.Name;
+                resultData.Add(model);
+                if (item.Children.Any())
+                {
+                    GetTree(length + 1, item.Children, ref resultData);
+                }
+            }
+        }
+
+        public List<TreeGridModel> GetTreeData(string pid, List<SysMenu> menus)
+        {
+            List<TreeGridModel> result = new List<TreeGridModel>();
+            foreach (var sysMenu in menus)
+            {
+                TreeGridModel node = new TreeGridModel();
+                if (!string.IsNullOrEmpty(sysMenu.MenuId) && sysMenu.ParentId == pid)
+                {
+                    node.Id = sysMenu.MenuId;
+                    node.Name = sysMenu.MenuName;
+                    List<TreeGridModel> children = GetTreeData(sysMenu.MenuId, menus);
+                    if (null != children && children.Any())
+                    {
+                        node.Children = children;
+                    }
+                    result.Add(node);
+                }
+            }
+            return result;
+        }
+
+
+
 
         private List<SysMenu> MenusData()
         {
@@ -205,7 +248,7 @@ namespace WebApplication1.Controllers
                     ParentId = "21",
                     MenuName = "目录管理",
                     Icon = "",
-                    LinkUrl = "/sysmenu/list",
+                    LinkUrl = "/Main/Menu",
                     IsHeader = 0,
                     SortCode = 3
                 }
@@ -216,49 +259,12 @@ namespace WebApplication1.Controllers
 
 
         #endregion
+    }
 
+    public class MenuModel
+    {
+        public string Id { get; set; }
 
-        public IActionResult Index()
-        {
-            try
-            {
-                var count = _userService.GetUsersCount();
-                //var model = _userRepository.GetModel(2);
-                //ViewData["username"] = model.RealName;
-                ViewData["username"] = count;
-                return View();
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex, "自定义错误！");
-                throw;
-            }
-            //var count = _userRepository.GetList("select * from UserTwo",null).Count();
-        }
-
-        public IActionResult AddUser()
-        {
-            try
-            {
-                var model = new UserTwo();
-                model.UserName = "测试88888";
-                model.UserPass = "123123";
-                model.RealName = "王明189";
-                var res = _userService.AddUser(model);
-                if (res)
-                {
-                    return Content("OKOKOK");
-                }
-                else
-                {
-                    return Content("ERROR");
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex, "这里错了！！！！！" + ex.Message);
-                throw;
-            }
-        }
+        public string Name { get; set; }
     }
 }

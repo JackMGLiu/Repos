@@ -267,6 +267,7 @@
     <Folder Include="Views\SysUser\" />
     <Folder Include="Views\HelloWorld\" />
     <Folder Include="Views\SysDataDict\" />
+    <Folder Include="Views\SysMenu\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetCoreModel\NetCoreModel.csproj" />

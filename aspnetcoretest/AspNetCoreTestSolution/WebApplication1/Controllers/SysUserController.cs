@@ -59,9 +59,7 @@ namespace WebApplication1.Controllers
                 {
                     if (model != null)
                     {
-                        model.UserId = Guid.NewGuid().ToString();
                         model.PassWord = "123456";
-
                         model.CreateUser = "≤‚ ‘»À‘±";
                         var res = _sysUserService.AddUser(model);
                         if (res)
@@ -173,7 +171,7 @@ namespace WebApplication1.Controllers
         [HttpGet("sysuser/getusers")]
         public IActionResult GetPageData(int page = 1)
         {
-            var data = _sysUserService.GetPageList("", page, 2);
+            var data = _sysUserService.GetPageList("", page, 10);
             var items = _mapper.Map<List<SysUserViewModel>>(data.Items);
             //var items = data.Items.Select(s => _mapper.Map<SysUserViewModel>(s));
             var json = new { data.TotalNum, Items = items, data.CurrentPage, data.TotalPageCount };

@@ -21,8 +21,7 @@ namespace NetCoreService.Impl
             bool flag = false;
             try
             {
-                model.IsDelete = 0;
-                model.CreateTime=DateTime.Now;
+                model.DoCreate();
                 _sysUserRepository.AddModel(model);
                 flag = true;
             }
