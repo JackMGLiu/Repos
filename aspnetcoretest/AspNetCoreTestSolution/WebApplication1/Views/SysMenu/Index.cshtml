@@ -19,28 +19,68 @@
     <link href="~/css/global.css" rel="stylesheet" />
     <link href="~/layui/layui/css/layui.css" rel="stylesheet" />
     <link type="text/css" href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/table.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="layui-form">
-        <div class="layui-form-item">
-            <div class="layui-input-inline">
-                @*<div id="divmenus"></div>*@
-                <select id="menus" name="menus">
-                    <option value="">请选择栏目</option>
-                </select>
-            </div>
+    <div class="admin-main">
+        <blockquote class="layui-elem-quote">
+            <a href="javascript:;" class="layui-btn layui-btn-small" id="add">
+                <i class="fa fa-plus" aria-hidden="true"></i> 添加信息
+            </a>
+            <a href="#" class="layui-btn layui-btn-small" id="delete">
+                <i class="fa fa-minus-circle" aria-hidden="true"></i> 删除信息
+            </a>
+        </blockquote>
+        <div class="layui-field-box layui-form">
+            <table id="menus" class="layui-table table-hover">
+                <thead>
+                    <tr>
+                        <th>目录名称</th>
+                        <th>目录图标</th>
+                        <th>是否顶级</th>
+                        <th>排列序号</th>
+                        <th>目录状态</th>
+                        <th>添加时间</th>
+                        <th>添加人员</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="utbody"></tbody>
+            </table>
         </div>
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
-    @*<script src="~/layui/layui.js"></script>*@
     <script src="~/layui/layui/lay/dest/layui.all.js"></script>
     <script src="~/js/utils.js"></script>
-    <script id="demo" type="text/html">
-        <option value="">请选择栏目</option>
-        <option value="0">根目录</option>
-        {{# layui.each(d, function(index, item){ }}
-        <option value="{{item.Id}}">{{item.Name}}</option>
-        {{# }); }}
+    <script id="tabletempl" type="text/html">
+        {{#  layui.each(d, function(index, item){ }}
+        <tr>
+            <td>{{item.MenuName}}</td>
+            <td>{{item.Icon}}</td>
+            <td>
+                {{#  if(item.IsHeader===1){ }}
+                <i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>
+                {{#  }else{ }}
+                <i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>
+                {{#  }}}
+            </td>
+            <td>{{item.SortCode}}</td>
+            <td>
+                {{#  if(item.Status===1){ }}
+                <i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>
+                {{#  }else{ }}
+                <i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>
+                {{#  }}}
+            </td>
+            <td>{{item.CreateTime}}</td>
+            <td>{{item.CreateUser}}</td>
+            <td>
+                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
+                <a href="javascript:void(0);" data-id="{{item.MenuId}}" class="layui-btn layui-btn-mini" onclick="showEdit('编辑信息 ({{item.MenuName}})','{{item.MenuId}}');">编辑</a>
+                <a href="javascript:void(0);" id="{{item.MenuId}}" data-id="{{item.MenuId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
+            </td>
+        </tr>
+        {{#  }); }}
     </script>
     <script>
         var msgloading;
@@ -54,6 +94,9 @@
                 laytpl = layui.laytpl;
             });
         $(window).ready(function () {
+            bindGird();
+        });
+        function bindGird() {
             $.ajax({
                 url: '/sysmenu/getmenus',
                 cache: false,
@@ -68,38 +111,23 @@
                     layer.close(msgloading);
                 },
                 success: function (res) {
-                    //$('#menus').append("<option value='1'>请选择栏目...</option>");
-                    //var data = toTreeData(res, 'MenuId', 'ParentId', 'Children');
-                    var gettpl = document.getElementById('demo').innerHTML;
-                    laytpl(gettpl).render(res,
-                        function (html) {
-                            document.getElementById('menus').innerHTML = html;
-                            form.render();
-                        });
+                    if (res) {
+                        if (res.length > 0) {
+                            var gettpl = document.getElementById('tabletempl').innerHTML;
+                            laytpl(gettpl).render(res,
+                                function (html) {
+                                    document.getElementById('utbody').innerHTML = html;
+                                });
+                        }
+                    }
+                },
+                error: function (msg) {
+                    console.log(msg);
                 }
             });
-        });
+        }
 
-        //recursive tree node
-        function buildNode(len, data) {
-            var prefix = "|";
-            for (var i = 0; i < len; i++) {
-                prefix += "-";
-            }
-            $.each(data, function (i, item) {
-                if (item.Children.length > 0) {
-                    $('#menus').append("<option value=" + item.MenuId + ">" + prefix + item.MenuName + "</option>");
-                    buildNode(len + 1, item);
-                } else {
-                    $('#menus').append("<option value=" + item.MenuId + ">" + prefix + item.MenuName + "</option>");
-                }
-                //if (0 < item.Children.length) {
-                //    $('#menus').append("<option value=" + item.MenuId + ">" + prefix + item.MenuName + "</option>");
-                //    buildNode(len + 1, item.Children);
-                //} else {
-                //    $('#menus').append("<option value=" + item.MenuId + ">" + prefix + item.MenuName + "</option>");
-                //}
-            });
+        function showEdit(title, key) {
         }
     </script>
 </body>

@@ -4,12 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
+using NetCoreService.DTO;
 using NetCoreService.DTO.FormatModel;
 
 namespace WebApplication1.Controllers
 {
     public class SysMenuController : Controller
     {
+        private List<MenuModel> menudata = null;
+
+        public SysMenuController()
+        {
+            menudata = new List<MenuModel>();
+        }
 
         [Route("sysmenu/list")]
         public IActionResult Index()
@@ -17,20 +24,18 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        List<MenuModel> menudata = new List<MenuModel>();
-
         [HttpGet("sysmenu/getmenus")]
         public IActionResult GetData()
         {
-            //var data = MenusData().OrderBy(m => m.SortCode);
-            var data = GetTreeData("0", MenusData());
-            GetTree(1, data, ref menudata);
+            var data = MenusData().OrderBy(m => m.SortCode).ToList();
+            var res = GetTreeData("0", data);
+            GetMenuTree(1, res, ref menudata);
             return Json(menudata);
         }
 
         #region 模拟目录数据
 
-        public void GetTree(int length, List<TreeGridModel> data, ref List<MenuModel> resultData)
+        public void GetMenuTree(int length, List<MenuModel> data, ref List<MenuModel> resultData)
         {
             string prefix =string.Empty;
             if (length > 1)
@@ -54,27 +59,51 @@ namespace WebApplication1.Controllers
             foreach (var item in data)
             {
                 model = new MenuModel();
-                model.Id = item.Id;
-                model.Name = prefix + item.Name;
+                model.MenuId = item.MenuId;
+                model.MenuName = prefix + item.MenuName;
+                model.ParentId = item.ParentId;
+                model.LinkUrl = item.LinkUrl;
+                model.Icon = item.Icon;
+                model.IsHeader = item.IsHeader;
+                model.Status = item.Status;
+                model.SortCode = item.SortCode;
+                model.IsDelete = item.IsDelete;
+                model.Description = item.Description;
+                model.CreateUser = item.CreateUser;
+                model.CreateTime = item.CreateTime;
+                model.ModifyUser = item.ModifyUser;
+                model.ModifyTime = item.ModifyTime;
                 resultData.Add(model);
                 if (item.Children.Any())
                 {
-                    GetTree(length + 1, item.Children, ref resultData);
+                    GetMenuTree(length + 1, item.Children, ref resultData);
                 }
             }
         }
 
-        public List<TreeGridModel> GetTreeData(string pid, List<SysMenu> menus)
+        public List<MenuModel> GetTreeData(string pid, List<SysMenu> menus)
         {
-            List<TreeGridModel> result = new List<TreeGridModel>();
+            List<MenuModel> result = new List<MenuModel>();
             foreach (var sysMenu in menus)
             {
-                TreeGridModel node = new TreeGridModel();
+                MenuModel node = new MenuModel();
                 if (!string.IsNullOrEmpty(sysMenu.MenuId) && sysMenu.ParentId == pid)
                 {
-                    node.Id = sysMenu.MenuId;
-                    node.Name = sysMenu.MenuName;
-                    List<TreeGridModel> children = GetTreeData(sysMenu.MenuId, menus);
+                    node.MenuId = sysMenu.MenuId;
+                    node.MenuName = sysMenu.MenuName;
+                    node.ParentId = sysMenu.ParentId;
+                    node.LinkUrl = sysMenu.LinkUrl;
+                    node.Icon = sysMenu.Icon;
+                    node.IsHeader = sysMenu.IsHeader;
+                    node.Status = sysMenu.Status;
+                    node.SortCode = sysMenu.SortCode;
+                    node.IsDelete = sysMenu.IsDelete;
+                    node.Description = sysMenu.Description;
+                    node.CreateUser = node.CreateUser;
+                    node.CreateTime = node.CreateTime;
+                    node.ModifyUser = node.ModifyUser;
+                    node.ModifyTime = node.ModifyTime;
+                    List<MenuModel> children = GetTreeData(sysMenu.MenuId, menus);
                     if (null != children && children.Any())
                     {
                         node.Children = children;
@@ -259,12 +288,5 @@ namespace WebApplication1.Controllers
 
 
         #endregion
-    }
-
-    public class MenuModel
-    {
-        public string Id { get; set; }
-
-        public string Name { get; set; }
     }
 }
