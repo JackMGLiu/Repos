@@ -38,6 +38,9 @@
                         <a href="#" class="layui-btn layui-btn-small" id="delete">
                             <i class="fa fa-minus-circle" aria-hidden="true"></i> 删除信息
                         </a>
+                        <a href="#" class="layui-btn layui-btn-small" id="addtype">
+                            <i class="fa fa-plus" aria-hidden="true"></i> 添加类型
+                        </a>
                         <a href="javascript:;" class="layui-btn layui-btn-small" id="typeop">
                             <i class="fa fa-plus" aria-hidden="true"></i> 类型管理
                         </a>
@@ -78,9 +81,13 @@
         $(function () {
             init();
 
+            $('#addtype').click(addItemType);
+
             $('#typeop').click(function() {
                 alert('类型管理');
             });
+
+
         });
 
         function init() {
@@ -111,6 +118,32 @@
                             }
                         });
                     }
+                }
+            });
+        }
+
+        function addItemType() {
+            layer.open({
+                type: 2,
+                anim: 1,
+                title: '新增信息',
+                content: '/dicttype/form',
+                area: ['82%', '90%'],
+                maxmin: true,
+                full: function (elem) {
+                    var win = window.top === window.self ? window : parent.window;
+                    $(win).on('resize',
+                        function () {
+                            var $this = $(this);
+                            elem.width($this.width()).height($this.height()).css({
+                                top: 0,
+                                left: 0
+                            });
+                            elem.children('div.layui-layer-content').height($this.height() - 95);
+                        });
+                },
+                end: function () {
+                    //bindGird();
                 }
             });
         }

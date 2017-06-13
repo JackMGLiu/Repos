@@ -1,17 +1,101 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
 using NetCoreService.DTO.FormatModel;
+using NetCoreService.Interface;
+using NLog;
 
 namespace WebApplication1.Controllers
 {
     public class SysDataDictController : Controller
     {
+        protected Logger _log;
+
+        protected IMapper _mapper { get; set; }
+
+        protected IDictTypeService _dictTypeService;
+
+        public SysDataDictController(IMapper mapper, IDictTypeService dictTypeService)
+        {
+            _log = LogManager.GetCurrentClassLogger();
+            _mapper = mapper;
+            _dictTypeService = dictTypeService;
+        }
+
+
         [Route("dict/list")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [Route("dicttype/form")]
+        public IActionResult EditTypeForm()
+        {
+            return View();
+        }
+
+        [HttpPost("dicttype/savedata")]
+        public IActionResult EditTypeForm(string key, DictType model)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(key))
+                {
+                    if (model != null)
+                    {
+                        model.CreateUser = "测试人员";
+                        var res = _dictTypeService.AddDictType(model);
+                        if (res)
+                        {
+                            var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
+                            return Json(json);
+                        }
+                        else
+                        {
+                            var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
+                            return Json(json);
+                        }
+                    }
+                    else
+                    {
+                        var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
+                        return Json(json);
+                    }
+                }
+                else
+                {
+                    var currentmodel = _dictTypeService.GetDictTypeByKey(key);
+                    currentmodel.ParentId = model.ParentId;
+                    currentmodel.DictTypeCode = model.DictTypeCode;
+                    currentmodel.DictTypeName = model.DictTypeName;
+                    currentmodel.IsNav = model.IsNav;
+                    currentmodel.IsLast = model.IsLast;
+                    currentmodel.SortCode = model.SortCode;
+                    currentmodel.Status = model.Status;
+                    currentmodel.Description = model.Description;
+                    currentmodel.ModifyUser = "测试修改人员";
+                    var res = _dictTypeService.EditDictType(currentmodel);
+                    if (res)
+                    {
+                        var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
+                        return Json(json);
+                    }
+                    else
+                    {
+                        var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
+                        return Json(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, ex.Message);
+                throw;
+            }
         }
 
         [Route("dict/getlist")]

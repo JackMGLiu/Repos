@@ -15,7 +15,6 @@ namespace NetCoreService.Impl
             this._sysUserRepository = sysUserRepository;
         }
 
-
         public bool AddUser(SysUser model)
         {
             bool flag = false;

@@ -45,7 +45,6 @@ function addIframe(cur) {
     var h = $this.attr("href"),
         m = $this.data("index"),
         label = $this.find("span").text(),
-        icon = $this.find('i').attr('class'),
         isHas = false;
     if (h == "" || h == null || $.trim(h).length == 0) {
         return false;

@@ -67,12 +67,14 @@ namespace WebApplication1
             services.AddSingleton<ISysUserRepository>(new SysUserRepository(CreateDbConnection()));
             services.AddSingleton<ISysMenuRepository>(new SysMenuRepository(CreateDbConnection()));
             services.AddSingleton<IDictTypeRepository>(new DictTypeRepository(CreateDbConnection()));
+            services.AddSingleton<IDictDetailRepository>(new DictDetailRepository(CreateDbConnection()));
 
 
             services.AddSingleton<IUserService,UserService>();
             services.AddSingleton<ISysUserService, SysUserService>();
             services.AddSingleton<ISysMenuService, SysMenuService>();
             services.AddSingleton<IDictTypeService, DictTypeService>();
+            services.AddSingleton<IDictDetailService, DictDetailService>();
 
             // Add framework services.
             //services.AddMvc();
