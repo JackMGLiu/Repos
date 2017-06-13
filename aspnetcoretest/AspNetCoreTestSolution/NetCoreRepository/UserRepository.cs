@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Data.Common;
-using NetCoreData;
+﻿using System.Data.Common;
 using NetCoreData.Dapper;
 using NetCoreModel;
 

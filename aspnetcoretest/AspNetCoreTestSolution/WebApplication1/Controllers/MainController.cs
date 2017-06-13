@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
-using NetCoreRepository;
 using NetCoreService;
 using NetCoreService.Interface;
-using Newtonsoft.Json;
 using NLog;
 
 namespace WebApplication1.Controllers

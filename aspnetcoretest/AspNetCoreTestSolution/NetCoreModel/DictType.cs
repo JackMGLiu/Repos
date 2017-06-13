@@ -16,7 +16,6 @@ namespace NetCoreModel
         public int? SortCode { get; set; }
         public int Status { get; set; }
         public int IsDelete { get; set; }
-        public string Address { get; set; }
         public string Description { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateUser { get; set; }

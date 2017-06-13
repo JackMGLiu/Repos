@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NetCoreRepository;
 using NetCoreRepository.Impl;
 using NetCoreRepository.Interface;
@@ -14,7 +13,6 @@ using NetCoreService;
 using NetCoreService.DTO;
 using NetCoreService.Impl;
 using NetCoreService.Interface;
-using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using WebApplication1.Codes;
@@ -74,6 +72,7 @@ namespace WebApplication1
             services.AddSingleton<IUserService,UserService>();
             services.AddSingleton<ISysUserService, SysUserService>();
             services.AddSingleton<ISysMenuService, SysMenuService>();
+            services.AddSingleton<IDictTypeService, DictTypeService>();
 
             // Add framework services.
             //services.AddMvc();

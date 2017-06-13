@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NetCoreService.DTO.FormatModel
+﻿namespace NetCoreService.DTO.FormatModel
 {
     public class TreeModel
     {

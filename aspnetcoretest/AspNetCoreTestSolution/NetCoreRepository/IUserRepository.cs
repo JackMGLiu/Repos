@@ -1,5 +1,4 @@
-﻿using NetCoreData;
-using NetCoreData.Dapper;
+﻿using NetCoreData.Dapper;
 using NetCoreModel;
 
 namespace NetCoreRepository
