@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
 using NetCoreRepository;
 using NetCoreService;
+using NetCoreService.Interface;
 using Newtonsoft.Json;
 using NLog;
 
@@ -18,6 +19,8 @@ namespace WebApplication1.Controllers
         /// </summary>99
         //protected IUserRepository _userRepository;
         protected IUserService _userService;
+
+        protected ISysMenuService _sysMenuService;
         /// <summary>
         /// 日志类
         /// </summary>
@@ -26,10 +29,11 @@ namespace WebApplication1.Controllers
         /// 通用项目平台控制层实例
         /// </summary>
         /// <param name="userService">业务仓储类</param>
-        public MainController(IUserService userService)
+        public MainController(IUserService userService, ISysMenuService sysMenuService)
         {
             _log = LogManager.GetCurrentClassLogger();
             _userService = userService;
+            this._sysMenuService = sysMenuService;
         }
 
         public IActionResult SysMain()
@@ -37,9 +41,10 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        [Route("main/getmenus")]
         public IActionResult GetMenus()
         {
-            var data = this.MenusData().OrderBy(m => m.SortCode);
+            var data = _sysMenuService.GerMenuList();
             return Json(data);
         }
 

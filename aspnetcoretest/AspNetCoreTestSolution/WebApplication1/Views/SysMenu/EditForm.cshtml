@@ -6,7 +6,9 @@
 @section scripts
 {
     <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
+    <script src="~/js/utils.js"></script>
     <script id="menuparent" type="text/html">
+        <option value="">请选择目录</option>
         <option value="0">根目录</option>
         {{# layui.each(d, function(index, item){ }}
         <option value="{{item.MenuId}}">{{item.MenuName}}</option>
@@ -42,6 +44,40 @@
                             $('#Status').val(0);
                         }
                     });
+
+
+                form.on('submit(savedata)',
+                    function (data) {
+                        var key = $.request('key');
+                        $(this).ajaxSubmit({
+                            type: 'post',
+                            url: '/sysmenu/savedata?key=' + key,
+                            dataType: 'json',
+                            data: data.field,
+                            beforeSend: function () {
+                                msgloading = layer.msg('正在保存数据...',
+                                    {
+                                        icon: 16,
+                                        shade: 0.01
+                                    });
+                            },
+                            complete: function () {
+                                layer.close(msgloading);
+                            },
+                            success: function (res) {
+                                if (res.type == 1) {
+                                    layer.alert(res.msg,
+                                        function () {
+                                            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                            parent.layer.close(index);
+                                        });
+                                } else {
+                                    layer.alert(res.msg);
+                                }
+                            }
+                        });
+                        return false;
+                    });
             });
 
         $(window).ready(function () {
@@ -59,8 +95,6 @@
                     layer.close(msgloading);
                 },
                 success: function (res) {
-                    //$('#menus').append("<option value='1'>请选择栏目...</option>");
-                    //var data = toTreeData(res, 'MenuId', 'ParentId', 'Children');
                     var gettpl = document.getElementById('menuparent').innerHTML;
                     laytpl(gettpl).render(res,
                         function (html) {
@@ -81,23 +115,29 @@
             <label class="layui-form-label">上级节点：</label>
             <div class="layui-input-inline">
                 <input type="hidden" id="MenuId" name="MenuId" />
-                <select id="ParentId" name="ParentId">
+                <select id="ParentId" name="ParentId" lay-verify="required">
                     <option value="">请选择目录</option>
                 </select>
             </div>
             <label class="layui-form-label">目录名称：</label>
             <div class="layui-input-inline">
-                <input type="text" id="MenuName" name="MenuName" lay-verify="required" autocomplete="off" placeholder="请输入用户真实姓名" class="layui-input" />
+                <input type="text" id="MenuName" name="MenuName" lay-verify="required" autocomplete="off" placeholder="请输入用户目录名称" class="layui-input" />
             </div>
             <label class="layui-form-label">目录图标：</label>
             <div class="layui-input-inline">
-                <input type="text" id="Icon" name="Icon" autocomplete="off" placeholder="请输入用户昵称" class="layui-input" />
+                <input type="text" id="Icon" name="Icon" placeholder="请输入目录图标" autocomplete="off" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">链接地址：</label>
+            <div class="layui-input-block">
+                <input type="text" id="LinkUrl" name="LinkUrl" autocomplete="off" placeholder="请输入链接地址" class="layui-input" />
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">排列序号：</label>
             <div class="layui-input-inline">
-                <input type="text" id="SortCode" name="SortCode" lay-verify="number" autocomplete="off" placeholder="请输入年龄" class="layui-input" />
+                <input type="text" id="SortCode" name="SortCode" lay-verify="number" autocomplete="off" placeholder="请输入排列序号" class="layui-input" value="0" />
             </div>
             <label class="layui-form-label">是否顶部：</label>
             <div class="layui-input-inline">

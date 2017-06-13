@@ -7,18 +7,26 @@ using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.DTO.FormatModel;
 using NetCoreService.Interface;
+using NLog;
 
 namespace WebApplication1.Controllers
 {
     public class SysMenuController : Controller
     {
         private List<MenuModel> menudata = null;
+
+        /// <summary>
+        /// 日志类
+        /// </summary>
+        protected Logger _log;
+
         private ISysMenuService _sysMenuService;
 
 
         public SysMenuController(ISysMenuService sysMenuService)
         {
             menudata = new List<MenuModel>();
+            _log = LogManager.GetCurrentClassLogger();
             this._sysMenuService = sysMenuService;
         }
 
@@ -46,72 +54,61 @@ namespace WebApplication1.Controllers
         [HttpPost("sysmenu/savedata")]
         public IActionResult EditForm(string key, SysMenu model)
         {
-            return null;
-            //try
-            //{
-            //    if (string.IsNullOrEmpty(key))
-            //    {
-            //        if (model != null)
-            //        {
-            //            model.PassWord = "123456";
-            //            model.CreateUser = "测试人员";
-            //            var res = _sysUserService.AddUser(model);
-            //            if (res)
-            //            {
-            //                var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
-            //                return Json(json);
-            //            }
-            //            else
-            //            {
-            //                var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
-            //                return Json(json);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
-            //            return Json(json);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var currentmodel = _sysUserService.GetSysUserByKey(key);
-            //        currentmodel.UserName = model.UserName;
-            //        currentmodel.RealName = model.RealName;
-            //        currentmodel.NickName = model.NickName;
-            //        currentmodel.HeadImg = model.HeadImg;
-            //        currentmodel.Age = model.Age;
-            //        currentmodel.Gender = model.Gender;
-            //        currentmodel.Nation = model.Nation;
-            //        currentmodel.BirthDay = model.BirthDay;
-            //        currentmodel.CardId = model.CardId;
-            //        currentmodel.Phone = model.Phone;
-            //        currentmodel.Mobile = model.Mobile;
-            //        currentmodel.Email = model.Email;
-            //        currentmodel.QQ = model.QQ;
-            //        currentmodel.WeChat = model.WeChat;
-            //        currentmodel.Status = model.Status;
-            //        currentmodel.Address = model.Address;
-            //        currentmodel.Description = model.Description;
-            //        currentmodel.ModifyUser = "测试修改人员";
-            //        var res = _sysUserService.EditUser(currentmodel);
-            //        if (res)
-            //        {
-            //            var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
-            //            return Json(json);
-            //        }
-            //        else
-            //        {
-            //            var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
-            //            return Json(json);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    _log.Error(ex, ex.Message);
-            //    throw;
-            //}
+            try
+            {
+                if (string.IsNullOrEmpty(key))
+                {
+                    if (model != null)
+                    {
+                        model.CreateUser = "测试人员";
+                        var res = _sysMenuService.AddMenu(model);
+                        if (res)
+                        {
+                            var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
+                            return Json(json);
+                        }
+                        else
+                        {
+                            var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
+                            return Json(json);
+                        }
+                    }
+                    else
+                    {
+                        var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
+                        return Json(json);
+                    }
+                }
+                else
+                {
+                    var currentmodel = _sysMenuService.GetSysMenuByKey(key);
+                    currentmodel.ParentId = model.ParentId;
+                    currentmodel.MenuName = model.MenuName;
+                    currentmodel.LinkUrl = model.LinkUrl;
+                    currentmodel.Icon = model.Icon;
+                    currentmodel.IsHeader = model.IsHeader;
+                    currentmodel.SortCode = model.SortCode;
+                    currentmodel.Status = model.Status;
+                    currentmodel.Description = model.Description;
+                    currentmodel.ModifyUser = "测试修改人员";
+                    var res = _sysMenuService.EditMenu(currentmodel);
+                    if (res)
+                    {
+                        var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
+                        return Json(json);
+                    }
+                    else
+                    {
+                        var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
+                        return Json(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, ex.Message);
+                throw;
+            }
         }
 
         #region 模拟目录数据
@@ -180,10 +177,10 @@ namespace WebApplication1.Controllers
                     node.SortCode = sysMenu.SortCode;
                     node.IsDelete = sysMenu.IsDelete;
                     node.Description = sysMenu.Description;
-                    node.CreateUser = node.CreateUser;
-                    node.CreateTime = node.CreateTime;
-                    node.ModifyUser = node.ModifyUser;
-                    node.ModifyTime = node.ModifyTime;
+                    node.CreateUser = sysMenu.CreateUser;
+                    node.CreateTime = sysMenu.CreateTime;
+                    node.ModifyUser = sysMenu.ModifyUser;
+                    node.ModifyTime = sysMenu.ModifyTime;
                     List<MenuModel> children = GetTreeData(sysMenu.MenuId, menus);
                     if (null != children && children.Any())
                     {

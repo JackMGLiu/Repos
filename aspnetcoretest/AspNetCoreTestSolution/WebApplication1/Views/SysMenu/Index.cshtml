@@ -27,9 +27,6 @@
             <a href="javascript:;" class="layui-btn layui-btn-small" id="add">
                 <i class="fa fa-plus" aria-hidden="true"></i> 添加信息
             </a>
-            <a href="#" class="layui-btn layui-btn-small" id="delete">
-                <i class="fa fa-minus-circle" aria-hidden="true"></i> 删除信息
-            </a>
         </blockquote>
         <div class="layui-field-box layui-form">
             <table id="menus" class="layui-table table-hover">
@@ -40,6 +37,8 @@
                         <th>是否顶级</th>
                         <th>排列序号</th>
                         <th>目录状态</th>
+                        <th>链接地址</th>
+                        <th>说明</th>
                         <th>添加时间</th>
                         <th>添加人员</th>
                         <th>操作</th>
@@ -56,7 +55,7 @@
         {{#  layui.each(d, function(index, item){ }}
         <tr>
             <td>{{item.MenuName}}</td>
-            <td>{{item.Icon}}</td>
+            <td><i class="{{item.Icon}}"></i>&nbsp;&nbsp;&nbsp;({{item.Icon}})</td>
             <td>
                 {{#  if(item.IsHeader===1){ }}
                 <i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>
@@ -72,10 +71,22 @@
                 <i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>
                 {{#  }}}
             </td>
+            <td>
+                {{#  if(item.LinkUrl===null){ }}
+                {{#  }else{ }}
+                {{item.LinkUrl}}
+                {{#  }}}
+            </td>
+            <td>
+                {{#  if(item.Description===null){ }}
+                无
+                {{#  }else{ }}
+                {{item.Description}}
+                {{#  }}}
+            </td>
             <td>{{item.CreateTime}}</td>
             <td>{{item.CreateUser}}</td>
             <td>
-                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
                 <a href="javascript:void(0);" data-id="{{item.MenuId}}" class="layui-btn layui-btn-mini" onclick="showEdit('编辑信息 ({{item.MenuName}})','{{item.MenuId}}');">编辑</a>
                 <a href="javascript:void(0);" id="{{item.MenuId}}" data-id="{{item.MenuId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
             </td>

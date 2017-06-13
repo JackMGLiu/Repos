@@ -46,7 +46,7 @@ function addIframe(cur) {
         m = $this.data("index"),
         label = $this.find("span").text(),
         isHas = false;
-    if (h == "" || $.trim(h).length == 0) {
+    if (h == "" || h == null || $.trim(h).length == 0) {
         return false;
     }
 
@@ -94,7 +94,7 @@ function addTab(cur) {
     var navWidth = $(".layout-main-tab").outerWidth(true) - other_width;//可视宽度
     var hidewidth = 0;
     if ($(".tab-nav-content").width() < navWidth) {
-        hidewidth = 0
+        hidewidth = 0;
     } else {
         if (next_all <= (navWidth - $(cur).outerWidth(true) - $(cur).next().outerWidth(true))) {
             if ((navWidth - $(cur).next().outerWidth(true)) > next_all) {
@@ -235,12 +235,12 @@ function closePage() {
                     "fast");
             }
             $(this).parents(".content-tab").remove();
-            $(".body-iframe").each(function () {
+            $(".body-iframe").each(function() {
                 if ($(this).data("id") == url) {
                     $(this).remove();
                     return false;
                 }
-            })
+            });
         }
         if ($(this).parents(".content-tab").prev(".content-tab").size()) {
             var prev_url = $(this).parents(".content-tab").prev(".content-tab:last").data("id");
@@ -252,12 +252,12 @@ function closePage() {
                 }
             });
             $(this).parents(".content-tab").remove();
-            $(".body-iframe").each(function () {
+            $(".body-iframe").each(function() {
                 if ($(this).data("id") == url) {
                     $(this).remove();
                     return false;
                 }
-            })
+            });
         }
     } else {
         $(this).parents(".content-tab").remove();
@@ -309,18 +309,18 @@ function initMenu(menu, parent) {
         var str = "";
         try {
             if (item.IsHeader == "1") {
-                str = "<li class='menu-header'>" + item.MenuName + "</li>";
+                str = "<li class='menu-header'><i class='" + item.Icon + "'></i>&nbsp;&nbsp;" + item.MenuName + "</li>";
                 $(parent).append(str);
                 if (item.Children.length !== 0) {
                     initMenu(item.Children, parent);
                 }
             } else {
-                item.Icon == "" ? item.Icon = "&#xe610" : item.Icon = item.Icon;
+                item.Icon == "" || null ? item.Icon = "&#xe610" : item.Icon = item.Icon;
                 if (item.Children === null || item.Children === undefined) {
-                    str = "<li><a href='" + item.LinkUrl + "'><i class='icon-font'>" + item.Icon + "</i><span>" + item.MenuName + "</span></a></li>";
+                    str = "<li><a href='" + item.LinkUrl + "'><i class='" + item.Icon + "'></i><span>" + item.MenuName + "</span></a></li>";
                     $(parent).append(str);
                 } else {
-                    str = "<li><a href='" + item.LinkUrl + "'><i class='icon-font '>" + item.Icon + "</i><span>" + item.MenuName + "</span><i class='icon-font icon-right'>&#xe60b;</i></a>";
+                    str = "<li><a href='" + (item.LinkUrl == null ? '' : item.LinkUrl) + "'><i class='" + item.Icon + "'></i><span>" + item.MenuName + "</span><i class='icon-font icon-right'>&#xe60b;</i></a>";
                     str += "<ul class='menu-item-child' id='menu-child-" + item.MenuId + "'></ul></li>";
                     $(parent).append(str);
                     var childParent = $("#menu-child-" + item.MenuId);
@@ -330,8 +330,6 @@ function initMenu(menu, parent) {
         } catch (e) { }
     }
 }
-
-
 
 /*头部下拉框移入移出*/
 $(document).on("mouseenter", ".header-bar-nav", function () {
@@ -623,7 +621,8 @@ $(function () {
     //liu 6-3
     $.ajax({
         type: "get",
-        url: '/Main/GetMenus',
+        url: '/main/getmenus',
+        cache: false,
         dataType: 'json',
         success: function (data) {
             if (data.length !== 0) {

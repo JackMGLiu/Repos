@@ -31,7 +31,7 @@ namespace NetCoreService.Interface
         /// </summary>
         /// <param name="key">主键</param>
         /// <returns></returns>
-        SysUser GetSysMenuByKey(string key);
+        SysMenu GetSysMenuByKey(string key);
 
         /// <summary>
         /// 获取目录信息集合

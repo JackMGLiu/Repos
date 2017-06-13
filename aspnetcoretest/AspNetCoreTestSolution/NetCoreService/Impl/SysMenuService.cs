@@ -8,21 +8,43 @@ namespace NetCoreService.Impl
 {
     public class SysMenuService : ISysMenuService
     {
-        protected ISysMenuRepository _SysMenuRepository;
+        protected ISysMenuRepository _sysMenuRepository;
 
         public SysMenuService(ISysMenuRepository sysMenuRepository)
         {
-            this._SysMenuRepository = sysMenuRepository;
+            this._sysMenuRepository = sysMenuRepository;
         }
 
         public bool AddMenu(SysMenu model)
         {
-            throw new System.NotImplementedException();
+            bool flag = false;
+            try
+            {
+                model.DoCreate();
+                _sysMenuRepository.AddModel(model);
+                flag = true;
+            }
+            catch (Exception ex)
+            {
+                flag = false;
+            }
+            return flag;
         }
 
         public bool EditMenu(SysMenu model)
         {
-            throw new System.NotImplementedException();
+            bool flag = false;
+            try
+            {
+                model.DoModify(model.MenuId);
+                _sysMenuRepository.ModifyModel(model);
+                flag = true;
+            }
+            catch (Exception ex)
+            {
+                flag = false;
+            }
+            return flag;
         }
 
         public bool DeleteMenu(string key)
@@ -30,9 +52,23 @@ namespace NetCoreService.Impl
             throw new System.NotImplementedException();
         }
 
-        public SysUser GetSysMenuByKey(string key)
+        public SysMenu GetSysMenuByKey(string key)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                if (!string.IsNullOrEmpty(key))
+                {
+                    return _sysMenuRepository.GetModel(key);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public IEnumerable<SysMenu> GerMenuList()
@@ -40,7 +76,7 @@ namespace NetCoreService.Impl
             try
             {
                 string sql = "select * from SysMenu where IsDelete=0 order by SortCode asc";
-                return _SysMenuRepository.GetList(sql,null);
+                return _sysMenuRepository.GetList(sql,null);
             }
             catch (Exception ex)
             {
