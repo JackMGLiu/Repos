@@ -21,7 +21,6 @@
         layui.use(['form', 'laytpl'],
             function () {
                 form = layui.form();
-
                 laytpl = layui.laytpl;
 
                 //监听指定开关
@@ -80,7 +79,9 @@
                     });
             });
 
-        $(window).ready(function () {
+        $(function () {
+            init();
+
             $.ajax({
                 url: '/sysmenu/getmenus',
                 cache: false,
@@ -104,6 +105,33 @@
                 }
             });
         });
+
+        //初始化数据
+        function init() {
+            var key = $.request('key');
+            if (!$.isNullOrEmpty(key)) {
+                $.ajax({
+                    url: '/sysmenu/getmenu',
+                    data: { 'key': key },
+                    cache: false,
+                    beforeSend: function () {
+                        msgloading = layer.msg('正在加载数据...',
+                            {
+                                icon: 16,
+                                shade: 0.01
+                            });
+                    },
+                    complete: function () {
+                        layer.close(msgloading);
+                    },
+                    success: function (data) {
+                        $("#ParentId").val(data.ParentId);
+                        $('#form1').SetWebControls(data);
+                        form.render();
+                    }
+                });
+            }
+        }
     </script>
 }
 <div style="margin: 15px;">

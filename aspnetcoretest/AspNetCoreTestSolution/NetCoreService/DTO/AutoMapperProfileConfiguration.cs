@@ -9,6 +9,9 @@ namespace NetCoreService.DTO
         {
             CreateMap<SysUser, SysUserViewModel>();
             CreateMap<SysUserViewModel, SysUser>();
+
+            CreateMap<SysMenu, SysMenuViewModel>();
+            CreateMap<SysMenuViewModel, SysMenu>();
         }
         
         //protected void Configure()

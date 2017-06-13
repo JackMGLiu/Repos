@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
-using NetCoreService;
 using NetCoreService.DTO;
 using NetCoreService.Interface;
-using Newtonsoft.Json;
 using NLog;
 
 namespace WebApplication1.Controllers
@@ -47,7 +43,7 @@ namespace WebApplication1.Controllers
         [Route("sysuser/form")]
         public IActionResult EditForm()
         {
-            return PartialView();
+            return View();
         }
 
         [HttpPost("sysuser/savedata")]

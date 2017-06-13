@@ -170,6 +170,29 @@
         }
 
         function showEdit(title, key) {
+            layer.open({
+                type: 2,
+                title: title,
+                anim: 2,
+                content: '/sysmenu/form?key=' + key,
+                area: ['82%', '90%'],
+                maxmin: true,
+                full: function (elem) {
+                    var win = window.top === window.self ? window : parent.window;
+                    $(win).on('resize',
+                        function () {
+                            var $this = $(this);
+                            elem.width($this.width()).height($this.height()).css({
+                                top: 0,
+                                left: 0
+                            });
+                            elem.children('div.layui-layer-content').height($this.height() - 95);
+                        });
+                },
+                end: function () {
+                    bindGird();
+                }
+            });
         }
     </script>
 </body>
