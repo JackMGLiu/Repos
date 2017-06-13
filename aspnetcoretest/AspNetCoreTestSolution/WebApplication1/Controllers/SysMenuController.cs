@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.DTO.FormatModel;
+using NetCoreService.Interface;
 
 namespace WebApplication1.Controllers
 {
     public class SysMenuController : Controller
     {
         private List<MenuModel> menudata = null;
+        private ISysMenuService _sysMenuService;
 
-        public SysMenuController()
+
+        public SysMenuController(ISysMenuService sysMenuService)
         {
             menudata = new List<MenuModel>();
+            this._sysMenuService = sysMenuService;
         }
 
         [Route("sysmenu/list")]
@@ -27,10 +31,87 @@ namespace WebApplication1.Controllers
         [HttpGet("sysmenu/getmenus")]
         public IActionResult GetData()
         {
-            var data = MenusData().OrderBy(m => m.SortCode).ToList();
+            var data = _sysMenuService.GerMenuList().ToList();
             var res = GetTreeData("0", data);
             GetMenuTree(1, res, ref menudata);
             return Json(menudata);
+        }
+
+        [Route("sysmenu/form")]
+        public IActionResult EditForm()
+        {
+            return View();
+        }
+
+        [HttpPost("sysmenu/savedata")]
+        public IActionResult EditForm(string key, SysMenu model)
+        {
+            return null;
+            //try
+            //{
+            //    if (string.IsNullOrEmpty(key))
+            //    {
+            //        if (model != null)
+            //        {
+            //            model.PassWord = "123456";
+            //            model.CreateUser = "测试人员";
+            //            var res = _sysUserService.AddUser(model);
+            //            if (res)
+            //            {
+            //                var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
+            //                return Json(json);
+            //            }
+            //            else
+            //            {
+            //                var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
+            //                return Json(json);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
+            //            return Json(json);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var currentmodel = _sysUserService.GetSysUserByKey(key);
+            //        currentmodel.UserName = model.UserName;
+            //        currentmodel.RealName = model.RealName;
+            //        currentmodel.NickName = model.NickName;
+            //        currentmodel.HeadImg = model.HeadImg;
+            //        currentmodel.Age = model.Age;
+            //        currentmodel.Gender = model.Gender;
+            //        currentmodel.Nation = model.Nation;
+            //        currentmodel.BirthDay = model.BirthDay;
+            //        currentmodel.CardId = model.CardId;
+            //        currentmodel.Phone = model.Phone;
+            //        currentmodel.Mobile = model.Mobile;
+            //        currentmodel.Email = model.Email;
+            //        currentmodel.QQ = model.QQ;
+            //        currentmodel.WeChat = model.WeChat;
+            //        currentmodel.Status = model.Status;
+            //        currentmodel.Address = model.Address;
+            //        currentmodel.Description = model.Description;
+            //        currentmodel.ModifyUser = "测试修改人员";
+            //        var res = _sysUserService.EditUser(currentmodel);
+            //        if (res)
+            //        {
+            //            var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
+            //            return Json(json);
+            //        }
+            //        else
+            //        {
+            //            var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
+            //            return Json(json);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    _log.Error(ex, ex.Message);
+            //    throw;
+            //}
         }
 
         #region 模拟目录数据

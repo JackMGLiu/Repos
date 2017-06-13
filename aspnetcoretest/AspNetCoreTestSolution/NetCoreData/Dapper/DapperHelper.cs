@@ -47,8 +47,7 @@ namespace NetCoreData.Dapper
         {
             try
             {
-                var data = Connection.Query<T>(sql, parmeters);
-                return data;
+                return Connection.Query<T>(sql, parmeters);
             }
             catch (Exception ex)
             {

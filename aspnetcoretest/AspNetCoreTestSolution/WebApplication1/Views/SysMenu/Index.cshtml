@@ -95,7 +95,38 @@
             });
         $(window).ready(function () {
             bindGird();
+
+            $('#add').click(additem);
         });
+
+
+        function additem() {
+            layer.open({
+                type: 2,
+                anim: 1,
+                title: '新增信息',
+                content: '/sysmenu/form',
+                area: ['82%', '90%'],
+                maxmin: true,
+                full: function (elem) {
+                    var win = window.top === window.self ? window : parent.window;
+                    $(win).on('resize',
+                        function () {
+                            var $this = $(this);
+                            elem.width($this.width()).height($this.height()).css({
+                                top: 0,
+                                left: 0
+                            });
+                            elem.children('div.layui-layer-content').height($this.height() - 95);
+                        });
+                },
+                end: function () {
+                    bindGird();
+                }
+            });
+        }
+
+
         function bindGird() {
             $.ajax({
                 url: '/sysmenu/getmenus',

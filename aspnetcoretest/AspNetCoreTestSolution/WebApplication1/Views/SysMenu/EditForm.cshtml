@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "目录信息表单";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
+    <script id="menuparent" type="text/html">
+        <option value="0">根目录</option>
+        {{# layui.each(d, function(index, item){ }}
+        <option value="{{item.MenuId}}">{{item.MenuName}}</option>
+        {{# }); }}
+    </script>
+    <script>
+        var msgloading;
+        var form;
+        var laytpl;
+        layui.use(['form', 'laytpl'],
+            function () {
+                form = layui.form();
+
+                laytpl = layui.laytpl;
+
+                //监听指定开关
+                form.on('switch(switchIsHeader)',
+                    function (data) {
+                        var ischeck = data.elem.checked;
+                        if (ischeck) {
+                            $('#IsHeader').val(1);
+                        } else {
+                            $('#IsHeader').val(0);
+                        }
+                    });
+
+                form.on('switch(switchStatus)',
+                    function (data) {
+                        var ischeck = data.elem.checked;
+                        if (ischeck) {
+                            $('#Status').val(1);
+                        } else {
+                            $('#Status').val(0);
+                        }
+                    });
+            });
+
+        $(window).ready(function () {
+            $.ajax({
+                url: '/sysmenu/getmenus',
+                cache: false,
+                beforeSend: function () {
+                    msgloading = layer.msg('正在加载数据...',
+                        {
+                            icon: 16,
+                            shade: 0.01
+                        });
+                },
+                complete: function () {
+                    layer.close(msgloading);
+                },
+                success: function (res) {
+                    //$('#menus').append("<option value='1'>请选择栏目...</option>");
+                    //var data = toTreeData(res, 'MenuId', 'ParentId', 'Children');
+                    var gettpl = document.getElementById('menuparent').innerHTML;
+                    laytpl(gettpl).render(res,
+                        function (html) {
+                            document.getElementById('ParentId').innerHTML = html;
+                            form.render();
+                        });
+                }
+            });
+        });
+    </script>
+}
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>请填写数据信息</legend>
+    </fieldset>
+    <form id="form1" class="layui-form" method="post" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级节点：</label>
+            <div class="layui-input-inline">
+                <input type="hidden" id="MenuId" name="MenuId" />
+                <select id="ParentId" name="ParentId">
+                    <option value="">请选择目录</option>
+                </select>
+            </div>
+            <label class="layui-form-label">目录名称：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="MenuName" name="MenuName" lay-verify="required" autocomplete="off" placeholder="请输入用户真实姓名" class="layui-input" />
+            </div>
+            <label class="layui-form-label">目录图标：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="Icon" name="Icon" autocomplete="off" placeholder="请输入用户昵称" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排列序号：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="SortCode" name="SortCode" lay-verify="number" autocomplete="off" placeholder="请输入年龄" class="layui-input" />
+            </div>
+            <label class="layui-form-label">是否顶部：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="IsHeader" name="IsHeader" lay-skin="switch" lay-filter="switchIsHeader" title="是否顶部" lay-text="是|否" />
+            </div>
+            <label class="layui-form-label">当前状态：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchStatus" title="当前状态" lay-text="启用|禁用" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注信息：</label>
+            <div class="layui-input-block">
+                <textarea id="Description" name="Description" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="savedata">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
