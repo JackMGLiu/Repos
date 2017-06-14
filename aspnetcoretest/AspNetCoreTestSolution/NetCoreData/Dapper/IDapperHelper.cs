@@ -27,9 +27,9 @@ namespace NetCoreData.Dapper
 
         T GetModel(object key);
 
-        T GetModelBySql(string sql, params DbParameter[] parmeters);
+        T GetModelBySql(string sql, object parmeters = null);
 
-        IEnumerable<T> GetList(string sql, params DbParameter[] parmeters);
+        IEnumerable<T> GetList(string sql, object parmeters=null);
 
         #endregion
 

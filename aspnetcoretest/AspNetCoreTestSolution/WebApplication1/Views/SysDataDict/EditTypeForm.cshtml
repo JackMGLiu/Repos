@@ -1,12 +1,19 @@
 ﻿
 @{
-    ViewData["Title"] = "EditTypeForm";
+    ViewData["Title"] = "数据字典类型表单";
     Layout = "~/Views/Shared/_FormLayout.cshtml";
 }
 @section scripts
 {
     <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
     <script src="~/js/utils.js"></script>
+    <script id="dicttypeparent" type="text/html">
+        <option value="">请选择目录</option>
+        <option value="0">根目录</option>
+        {{# layui.each(d, function(index, item){ }}
+        <option value="{{item.DictTypeId}}">{{item.DictTypeName}}</option>
+        {{# }); }}
+    </script>
     <script>
         var msgloading;
         var form;
@@ -80,6 +87,35 @@
                         return false;
                     });
             });
+
+        $(window).ready(function() {
+            init();
+        });
+
+        function init() {
+            $.ajax({
+                url: '/dicttype/gettypetree',
+                cache: false,
+                beforeSend: function () {
+                    msgloading = layer.msg('正在加载数据...',
+                        {
+                            icon: 16,
+                            shade: 0.01
+                        });
+                },
+                complete: function () {
+                    layer.close(msgloading);
+                },
+                success: function (res) {
+                    var gettpl = document.getElementById('dicttypeparent').innerHTML;
+                    laytpl(gettpl).render(res,
+                        function (html) {
+                            document.getElementById('ParentId').innerHTML = html;
+                            form.render();
+                        });
+                }
+            });
+        }
     </script>
 }
 <div style="margin: 15px;">
@@ -93,7 +129,6 @@
                 <input type="hidden" id="DictTypeId" name="DictTypeId" />
                 <select id="ParentId" name="ParentId" lay-verify="required">
                     <option value="">请选择上级节点</option>
-                    <option value="0">根目录</option>
                 </select>
             </div>
             <label class="layui-form-label">类型名称：</label>

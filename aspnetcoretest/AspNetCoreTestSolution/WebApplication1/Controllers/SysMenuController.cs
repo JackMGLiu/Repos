@@ -130,10 +130,11 @@ namespace WebApplication1.Controllers
             }
         }
 
+        #region µÝ¹éÊ÷ÐÎ½á¹¹
 
         public void GetMenuTree(int length, List<MenuModel> data, ref List<MenuModel> resultData)
         {
-            string prefix =string.Empty;
+            string prefix = string.Empty;
             if (length > 1)
             {
                 string nbsp = "&nbsp;";
@@ -141,7 +142,7 @@ namespace WebApplication1.Controllers
                 {
                     nbsp += "&nbsp;&nbsp;";
                 }
-                prefix = nbsp+"|";
+                prefix = nbsp + "|";
             }
             else
             {
@@ -209,5 +210,7 @@ namespace WebApplication1.Controllers
             }
             return result;
         }
+
+        #endregion
     }
 }

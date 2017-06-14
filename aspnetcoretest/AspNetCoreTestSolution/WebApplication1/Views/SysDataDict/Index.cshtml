@@ -27,6 +27,8 @@
             <div style="flex: 1; border-right: 1px dotted #ddd">
                 <div style="display: inline-block; width: 140px; overflow: auto;">
                     <ul id="tree_dict"></ul>
+                    <input type="hidden" id="HDictTypeId" name="HDictTypeId" />
+                    <input type="hidden" id="HDictTypeName" name="HDictTypeName" />
                 </div>
             </div>
             <div style="flex: 6;">
@@ -45,21 +47,23 @@
                             <i class="fa fa-plus" aria-hidden="true"></i> 类型管理
                         </a>
                     </blockquote>
-                    <table id="users" class="layui-table table-hover">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="checkalla" lay-skin="primary" lay-filter="allChoose" /></th>
-                                @*<th></th>*@
-                                <th>用户名</th>
-                                <th>真实姓名</th>
-                                <th>用户状态</th>
-                                <th>添加时间</th>
-                                <th>添加人员</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="utbody"></tbody>
-                    </table>
+                    <div class="layui-field-box layui-form">
+                        <table id="dicts" class="layui-table table-hover">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="checkalla" lay-skin="primary" lay-filter="allChoose" /></th>
+                                    <th>字典名称</th>
+                                    <th>字典值</th>
+                                    <th>排列序号</th>
+                                    <th>当前状态</th>
+                                    <th>添加时间</th>
+                                    <th>添加人员</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="utbody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,6 +71,30 @@
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/layui/layui/lay/dest/layui.all.js"></script>
     <script src="~/js/utils.js"></script>
+    <script id="tabletempl" type="text/html">
+        {{#  layui.each(d, function(index, item){ }}
+        <tr>
+            <td><input type="checkbox" name="dictcheck" id={{item.DictDetailId}} lay-skin="primary" /></td>
+            <td>{{item.ItemName}}</td>
+            <td>{{item.ItemValue}}</td>
+            <td>{{item.SortCode}}</td>
+            <td>
+                {{#  if(item.Status===1){ }}
+                <i class="layui-icon menu-isshow menu-isshow_y">&#xe605;</i>
+                {{#  }else{ }}
+                <i class="layui-icon menu-isshow menu-isshow_n">&#x1006;</i>
+                {{#  }}}
+            </td>
+            <td>{{item.CreateTime}}</td>
+            <td>{{item.CreateUser}}</td>
+            <td>
+                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
+                <a href="javascript:void(0);" data-id="{{item.DictDetailId}}" class="layui-btn layui-btn-mini" onclick="showEdit('编辑信息 ({{item.ItemName}})','{{item.DictDetailId}}');">编辑</a>
+                <a href="javascript:void(0);" id="{{item.DictDetailId}}" data-id="{{item.DictDetailId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
+            </td>
+        </tr>
+        {{#  }); }}
+    </script>
     <script>
         var msgloading;
         var layer;
@@ -76,24 +104,26 @@
             function () {
                 layer = layui.layer;
                 form = layui.form();
+                laytpl = layui.laytpl;
             });
 
         $(function () {
-            init();
+            dictTypeInit();
 
+            $('#add').click(addItem);
             $('#addtype').click(addItemType);
 
-            $('#typeop').click(function() {
+            $('#typeop').click(function () {
                 alert('类型管理');
             });
 
 
         });
 
-        function init() {
+        function dictTypeInit() {
             $.ajax({
                 type: 'get',
-                url: '/dict/getlist',
+                url: '/dicttype/getlist',
                 cache: false,
                 beforeSend: function () {
                     msgloading = layer.msg('正在加载数据...',
@@ -107,19 +137,93 @@
                 },
                 success: function (res) {
                     if (res) {
+                        $('#tree_dict').empty();
                         var data = toTreeData(res, 'id', 'parentid', 'children');
                         layui.tree({
                             elem: '#tree_dict',
                             nodes: data,
                             click: function (node) {
                                 if (node.islast == 1) {
-                                    alert(node.name);
-                                }   
+                                    var typeId = node.id;
+                                    var typecode = node.code;
+                                    var typeName = node.name;
+                                    $('#HDictTypeId').val(typeId);
+                                    $('#HDictTypeName').val(typeName);
+                                    dictInit(typecode);
+                                }
                             }
                         });
                     }
                 }
             });
+        }
+
+        function dictInit(tcode) {
+            $.ajax({
+                type: 'get',
+                url: '/dict/getlist',
+                cache: false,
+                data: { code: tcode },
+                beforeSend: function () {
+                    msgloading = layer.msg('正在加载数据...',
+                        {
+                            icon: 16,
+                            shade: 0.01
+                        });
+                },
+                complete: function () {
+                    layer.close(msgloading);
+                },
+                success: function (res) {
+                    if (res) {
+                        if (res.length > 0) {
+                            var gettpl = document.getElementById('tabletempl').innerHTML;
+                            laytpl(gettpl).render(res,
+                                function (html) {
+                                    document.getElementById('utbody').innerHTML = html;
+                                    form.render('checkbox');
+                                });
+                        }
+                    }
+                }
+            });
+        }
+
+        function addItem() {
+            var htypeid = $('#HDictTypeId').val();
+            if ($.isNullOrEmpty(htypeid)) {
+                layer.alert('您还没有选择字典类型！',
+                    {
+                        icon: 0,
+                        title: '提示信息'
+                    });
+                return;
+            } else {
+                var typename = $('#HDictTypeName').val();
+                layer.open({
+                    type: 2,
+                    anim: 1,
+                    title: '新增（' + typename + '）信息',
+                    content: '/dict/form',
+                    area: ['82%', '90%'],
+                    maxmin: true,
+                    full: function (elem) {
+                        var win = window.top === window.self ? window : parent.window;
+                        $(win).on('resize',
+                            function () {
+                                var $this = $(this);
+                                elem.width($this.width()).height($this.height()).css({
+                                    top: 0,
+                                    left: 0
+                                });
+                                elem.children('div.layui-layer-content').height($this.height() - 95);
+                            });
+                    },
+                    end: function () {
+                        //bindGird();
+                    }
+                });
+            }
         }
 
         function addItemType() {
@@ -143,7 +247,7 @@
                         });
                 },
                 end: function () {
-                    //bindGird();
+                    dictTypeInit();
                 }
             });
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NetCoreModel;
 using NetCoreRepository.Interface;
 using NetCoreService.Interface;
@@ -58,6 +59,19 @@ namespace NetCoreService.Impl
                 {
                     return null;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IEnumerable<DictType> GerDictTypeList()
+        {
+            try
+            {
+                string sql = "select * from DictType where IsDelete=0 order by SortCode asc";
+                return _dictTypeRepository.GetList(sql);
             }
             catch (Exception ex)
             {

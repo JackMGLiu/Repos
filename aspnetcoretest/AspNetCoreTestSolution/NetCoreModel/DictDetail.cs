@@ -9,6 +9,7 @@ namespace NetCoreModel
         [ExplicitKey]
         public string DictDetailId { get; set; }
         public string DictTypeId { get; set; }
+        public string DictTypeCode { get; set; }
         public string ParentId { get; set; }
         public string ItemCode { get; set; }
         public string ItemName { get; set; }

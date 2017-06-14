@@ -1,4 +1,5 @@
-﻿using NetCoreModel;
+﻿using System.Collections.Generic;
+using NetCoreModel;
 
 namespace NetCoreService.Interface
 {
@@ -24,5 +25,11 @@ namespace NetCoreService.Interface
         /// <param name="key">主键</param>
         /// <returns></returns>
         DictType GetDictTypeByKey(string key);
+
+        /// <summary>
+        /// 获取字典类型信息集合
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<DictType> GerDictTypeList();
     }
 }

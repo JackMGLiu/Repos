@@ -76,7 +76,7 @@ namespace NetCoreService.Impl
             try
             {
                 string sql = "select * from SysMenu where IsDelete=0 order by SortCode asc";
-                return _sysMenuRepository.GetList(sql,null);
+                return _sysMenuRepository.GetList(sql);
             }
             catch (Exception ex)
             {

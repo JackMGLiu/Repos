@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "数据字典明细表单";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script>
+        var msgloading;
+        var form;
+        var laytpl;
+        layui.use(['form'],
+            function() {
+                form = layui.form();
+            });
+    </script>
+}
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>请填写数据信息</legend>
+    </fieldset>
+    <form id="form1" class="layui-form" method="post" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型名称：</label>
+            <div class="layui-input-inline">
+                <input type="hidden" id="DictTypeId" name="DictTypeId" />
+                <select id="ParentId" name="ParentId" lay-verify="required">
+                    <option value="">请选择上级节点</option>
+                </select>
+            </div>
+            <label class="layui-form-label">类型名称：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="DictTypeName" name="DictTypeName" lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input" />
+            </div>
+            <label class="layui-form-label">类型代码：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="DictTypeCode" name="DictTypeCode" lay-verify="required" autocomplete="off" placeholder="请输入类型代码" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排列序号：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="SortCode" name="SortCode" lay-verify="number" autocomplete="off" placeholder="请输入排列序号" class="layui-input" value="0" />
+            </div>
+            <label class="layui-form-label">是否导航：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="IsNav" name="IsNav" lay-skin="switch" lay-filter="switchIsNav" title="是否导航" lay-text="是|否" value="0" />
+            </div>
+            <label class="layui-form-label">最后一项：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="IsLast" name="IsLast" lay-skin="switch" lay-filter="switchIsLast" title="最后一项" lay-text="是|否" value="0" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前状态：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchStatus" title="当前状态" lay-text="启用|禁用" value="0" />
+            </div>
+            <div class="layui-input-inline"></div>
+            <div class="layui-input-inline"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注信息：</label>
+            <div class="layui-input-block">
+                <textarea id="Description" name="Description" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="savedata">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

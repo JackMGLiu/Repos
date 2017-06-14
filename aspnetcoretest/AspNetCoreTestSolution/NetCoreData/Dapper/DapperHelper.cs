@@ -43,7 +43,7 @@ namespace NetCoreData.Dapper
             }
         }
 
-        public IEnumerable<T> GetList(string sql, params DbParameter[] parmeters)
+        public IEnumerable<T> GetList(string sql, object parmeters = null)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace NetCoreData.Dapper
             }
         }
 
-        public T GetModelBySql(string sql, params DbParameter[] parmeters)
+        public T GetModelBySql(string sql, object parmeters = null)
         {
             try
             {
