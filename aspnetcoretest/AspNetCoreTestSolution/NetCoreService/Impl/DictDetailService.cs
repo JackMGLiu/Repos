@@ -78,7 +78,7 @@ namespace NetCoreService.Impl
             {
                 if (!string.IsNullOrEmpty(typecode))
                 {
-                    string sql = "select * from DictDetail where DictTypeCode=@TypeCode and IsDelete=0";
+                    string sql = "select * from DictDetail where DictTypeCode=@TypeCode and IsDelete=0 order by SortCode";
 
                     var data = _dictDetailRepository.GetList(sql, new { TypeCode = typecode });
                     return data;

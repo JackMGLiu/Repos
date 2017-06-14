@@ -29,6 +29,7 @@
                     <ul id="tree_dict"></ul>
                     <input type="hidden" id="HDictTypeId" name="HDictTypeId" />
                     <input type="hidden" id="HDictTypeName" name="HDictTypeName" />
+                    <input type="hidden" id="HDictTypeCode" name="HDictTypeCode" />
                 </div>
             </div>
             <div style="flex: 6;">
@@ -149,6 +150,8 @@
                                     var typeName = node.name;
                                     $('#HDictTypeId').val(typeId);
                                     $('#HDictTypeName').val(typeName);
+                                    $('#HDictTypeCode').val(typecode);
+                                    $('#utbody').empty();
                                     dictInit(typecode);
                                 }
                             }
@@ -200,11 +203,12 @@
                 return;
             } else {
                 var typename = $('#HDictTypeName').val();
+                var typecode = $('#HDictTypeCode').val();
                 layer.open({
                     type: 2,
                     anim: 1,
                     title: '新增（' + typename + '）信息',
-                    content: '/dict/form',
+                    content: '/dict/form?typeid=' + htypeid + '&typecode=' + typecode,
                     area: ['82%', '90%'],
                     maxmin: true,
                     full: function (elem) {
