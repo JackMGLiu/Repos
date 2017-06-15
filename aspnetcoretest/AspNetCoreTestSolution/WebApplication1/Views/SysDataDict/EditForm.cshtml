@@ -62,7 +62,7 @@
             });
 
         $(window).ready(function () {
-            init()
+            init();
         });
 
         function init() {
@@ -70,6 +70,30 @@
             typecode = $.request('typecode');
             $('#DictTypeId').val(typeid);
             $('#DictTypeCode').val(typecode);
+
+            var key = $.request('key');
+            if (!$.isNullOrEmpty(key)) {
+                $.ajax({
+                    url: '/dict/getdict',
+                    data: { 'key': key },
+                    cache: false,
+                    beforeSend: function () {
+                        msgloading = layer.msg('正在加载数据...',
+                            {
+                                icon: 16,
+                                shade: 0.01
+                            });
+                    },
+                    complete: function () {
+                        layer.close(msgloading);
+                    },
+                    success: function (data) {
+                        //$("#ParentId").val(data.ParentId);
+                        $('#form1').SetWebControls(data);
+                        form.render();
+                    }
+                });
+            }
         }
 
     </script>
@@ -84,7 +108,7 @@
             <div class="layui-input-inline">
                 <input type="hidden" id="DictDetailId" name="DictDetailId" />
                 <input type="hidden" id="DictTypeId" name="DictTypeId"/>
-                <input type="text" id="DictTypeCode" name="DictTypeCode" lay-verify="required" autocomplete="off" readonly="readonly" class="layui-input"/>
+                <input type="text" id="DictTypeCode" name="DictTypeCode" autocomplete="off" readonly="readonly" class="layui-input" />
             </div>
             <label class="layui-form-label">字典名称：</label>
             <div class="layui-input-inline">
@@ -102,7 +126,7 @@
             </div>
             <label class="layui-form-label">当前状态：</label>
             <div class="layui-input-inline">
-                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchStatus" title="当前状态" lay-text="启用|禁用" value="0" />
+                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchStatus" title="当前状态" lay-text="启用|禁用" />
             </div>
             <div class="layui-input-inline">
             </div>

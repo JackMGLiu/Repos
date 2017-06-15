@@ -20,13 +20,14 @@
     <link href="~/layui/layui/css/layui.css" rel="stylesheet" />
     <link type="text/css" href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link type="text/css" href="~/css/table.css" rel="stylesheet" />
+    <link href="~/lib/zTree/css/metroStyle/metroStyle.css" rel="stylesheet" />
 </head>
 <body>
     <div class="admin-main">
         <div class="layui-field-box" style="display: flex;">
             <div style="flex: 1; border-right: 1px dotted #ddd">
                 <div style="display: inline-block; width: 140px; overflow: auto;">
-                    <ul id="tree_dict"></ul>
+                    <ul id="tree_dict" class="ztree"></ul>
                     <input type="hidden" id="HDictTypeId" name="HDictTypeId" />
                     <input type="hidden" id="HDictTypeName" name="HDictTypeName" />
                     <input type="hidden" id="HDictTypeCode" name="HDictTypeCode" />
@@ -71,6 +72,7 @@
     </div>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/layui/layui/lay/dest/layui.all.js"></script>
+    <script src="~/lib/zTree/js/jquery.ztree.all.js"></script>
     <script src="~/js/utils.js"></script>
     <script id="tabletempl" type="text/html">
         {{#  layui.each(d, function(index, item){ }}
@@ -89,7 +91,6 @@
             <td>{{item.CreateTime}}</td>
             <td>{{item.CreateUser}}</td>
             <td>
-                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini">预览</a>
                 <a href="javascript:void(0);" data-id="{{item.DictDetailId}}" class="layui-btn layui-btn-mini" onclick="showEdit('编辑信息 ({{item.ItemName}})','{{item.DictDetailId}}');">编辑</a>
                 <a href="javascript:void(0);" id="{{item.DictDetailId}}" data-id="{{item.DictDetailId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
             </td>
@@ -101,6 +102,37 @@
         var layer;
         var form;
         var laytpl;
+        var curMenu = null, zTree_Menu = null;
+        //ztree
+        var setting = {
+            view: {
+                //showLine: false,
+                //showIcon: false,
+                selectedMulti: false,
+                dblClickExpand: false
+            },
+            async: {
+                enable: true,
+                url: "/dicttype/getlist"
+            },
+            data: {
+                key: {
+                    name: 'name'
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: 'id',
+                    pIdKey: 'parentid',
+                    rootPId: '0'
+                }
+            },
+            callback: {
+                beforeClick: beforeClick,
+                onClick: zTreeOnClick
+
+            }
+        };
+
         layui.use(['laypage', 'layer', 'form', 'laytpl', 'tree'],
             function () {
                 layer = layui.layer;
@@ -109,7 +141,7 @@
             });
 
         $(function () {
-            dictTypeInit();
+            dictTypeInit();   //原先layui dicttypetree
 
             $('#add').click(addItem);
             $('#addtype').click(addItemType);
@@ -122,43 +154,26 @@
         });
 
         function dictTypeInit() {
-            $.ajax({
-                type: 'get',
-                url: '/dicttype/getlist',
-                cache: false,
-                beforeSend: function () {
-                    msgloading = layer.msg('正在加载数据...',
-                        {
-                            icon: 16,
-                            shade: 0.01
-                        });
-                },
-                complete: function () {
-                    layer.close(msgloading);
-                },
-                success: function (res) {
-                    if (res) {
-                        $('#tree_dict').empty();
-                        var data = toTreeData(res, 'id', 'parentid', 'children');
-                        layui.tree({
-                            elem: '#tree_dict',
-                            nodes: data,
-                            click: function (node) {
-                                if (node.islast == 1) {
-                                    var typeId = node.id;
-                                    var typecode = node.code;
-                                    var typeName = node.name;
-                                    $('#HDictTypeId').val(typeId);
-                                    $('#HDictTypeName').val(typeName);
-                                    $('#HDictTypeCode').val(typecode);
-                                    $('#utbody').empty();
-                                    dictInit(typecode);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
+            var treeObj = $("#tree_dict");
+            $.fn.zTree.init(treeObj, setting);
+        }
+
+        function zTreeOnClick(event, treeId, treeNode) {
+            var typeId = treeNode.id;
+            var typecode = treeNode.code;
+            var typeName = treeNode.name;
+            $('#HDictTypeId').val(typeId);
+            $('#HDictTypeName').val(typeName);
+            $('#HDictTypeCode').val(typecode);
+            $('#utbody').empty();
+            dictInit(typecode);
+        }
+
+        function beforeClick(treeId, treeNode) {
+            if (treeNode.isnav == 1 && treeNode.islast == 1) {
+                return true;
+            }
+            return false;
         }
 
         function dictInit(tcode) {
@@ -193,6 +208,7 @@
         }
 
         function addItem() {
+            var typename, typecode;
             var htypeid = $('#HDictTypeId').val();
             if ($.isNullOrEmpty(htypeid)) {
                 layer.alert('您还没有选择字典类型！',
@@ -202,12 +218,12 @@
                     });
                 return;
             } else {
-                var typename = $('#HDictTypeName').val();
-                var typecode = $('#HDictTypeCode').val();
+                typename = $('#HDictTypeName').val();
+                typecode = $('#HDictTypeCode').val();
                 layer.open({
                     type: 2,
                     anim: 1,
-                    title: '新增（' + typename + '）信息',
+                    title: '新增（' + typename + '）字典信息',
                     content: '/dict/form?typeid=' + htypeid + '&typecode=' + typecode,
                     area: ['82%', '90%'],
                     maxmin: true,
@@ -224,10 +240,37 @@
                             });
                     },
                     end: function () {
-                        //bindGird();
+                        dictInit(typecode);
                     }
                 });
             }
+        }
+
+        function showEdit(title, key) {
+            var typecode = $('#HDictTypeCode').val();
+            layer.open({
+                type: 2,
+                title: title,
+                anim: 2,
+                content: '/dict/form?key=' + key,
+                area: ['82%', '90%'],
+                maxmin: true,
+                full: function (elem) {
+                    var win = window.top === window.self ? window : parent.window;
+                    $(win).on('resize',
+                        function () {
+                            var $this = $(this);
+                            elem.width($this.width()).height($this.height()).css({
+                                top: 0,
+                                left: 0
+                            });
+                            elem.children('div.layui-layer-content').height($this.height() - 95);
+                        });
+                },
+                end: function () {
+                    dictInit(typecode);
+                }
+            });
         }
 
         function addItemType() {

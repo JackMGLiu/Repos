@@ -12,6 +12,9 @@ namespace NetCoreService.DTO
 
             CreateMap<SysMenu, SysMenuViewModel>();
             CreateMap<SysMenuViewModel, SysMenu>();
+
+            CreateMap<DictDetail, DictDetailViewModel>();
+            CreateMap<DictDetailViewModel, DictDetail>();
         }
         
         //protected void Configure()

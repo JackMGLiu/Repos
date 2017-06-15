@@ -219,6 +219,22 @@ namespace WebApplication1.Controllers
             return Json(data);
         }
 
+        [HttpGet("dict/getdict")]
+        public IActionResult GetModelByKey(string key)
+        {
+            try
+            {
+                var model = _dictDetailService.GetDictDetailByKey(key);
+                var data = _mapper.Map<DictDetailViewModel>(model);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, ex.Message);
+                throw;
+            }
+        }
+
         #endregion
 
         #region µÝ¹éÊ÷ÐÎ½á¹¹

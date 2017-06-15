@@ -74,6 +74,7 @@ $.fn.SetWebControls = function (data) {
                 case "checkswitch":
                     if (value === 1 || value === '1') {
                         id.attr("checked", 'checked');
+                        id.val(value);
                     } else {
                         id.removeAttr("checked");
                     }
