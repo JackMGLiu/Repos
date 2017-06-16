@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewData["Title"] = "日志详情";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@section scripts
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script>
+        var msgloading;
+        var form;
+        layui.use(['form'],
+            function () {
+                form = layui.form();
+            });
+
+        $(window).ready(function () {
+            init();
+        });
+
+        //初始化数据
+        function init() {
+            var key = $.request('key');
+            if (!$.isNullOrEmpty(key)) {
+                $.ajax({
+                    url: '/sys/getloginfo',
+                    data: { 'key': key },
+                    cache: false,
+                    beforeSend: function () {
+                        msgloading = layer.msg('正在加载数据...',
+                            {
+                                icon: 16,
+                                shade: 0.01
+                            });
+                    },
+                    complete: function () {
+                        layer.close(msgloading);
+                    },
+                    success: function (data) {
+                        $('#form1').SetWebControls(data);
+                        form.render();
+                    }
+                });
+            }
+        }
+    </script>
+}
+@section styles{
+    <style>
+        #form1 input{
+            border: none;
+        }
+
+        #form1 textarea {
+            border: 0px;
+        }
+    </style>
+
+}
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>日志数据信息</legend>
+    </fieldset>
+    <div id="form1" class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">记录时间：</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="LogId" name="LogId" />
+                <input type="text" name="CreateDate" id="CreateDate" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作人：</label>
+            <div class="layui-input-block">
+                <input type="text" name="OperUser" id="OperUser" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作人IP：</label>
+            <div class="layui-input-block">
+                <input type="text" name="IpAddress" id="IpAddress" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">日志级别：</label>
+            <div class="layui-input-block">
+                <input type="text" name="LogLevel" id="LogLevel" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">日志来源：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Origin" id="Origin" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">访问动作：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Action" id="Action" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">访问地址：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Request" id="Request" readonly="readonly" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">日志信息：</label>
+            <div class="layui-input-block">
+                <textarea id="Message" name="Message" readonly="readonly" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">错误信息：</label>
+            <div class="layui-input-block">
+                <textarea id="Exception" name="Exception" readonly="readonly" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">堆栈信息：</label>
+            <div class="layui-input-block">
+                <textarea id="StackTrace" name="StackTrace" readonly="readonly" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+

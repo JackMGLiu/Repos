@@ -1,5 +1,8 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreService.Interface;
+using NetCoreUtils;
+using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
@@ -27,6 +30,28 @@ namespace WebApplication1.Controllers
             var data = _logsService.GetPageList("", page, 20);
             var json = new { data.TotalNum, Items = data.Items, data.CurrentPage, data.TotalPageCount };
             return Json(json);
+        }
+
+        [Route("sys/loginfo")]
+        public IActionResult ShowInfo()
+        {
+            return View();
+        }
+
+
+        [HttpGet("sys/getloginfo")]
+        public IActionResult GetModelByKey(string key)
+        {
+            try
+            {
+                var model = _logsService.GeLogByKey(key);
+                return Json(model);
+            }
+            catch (Exception ex)
+            {
+                OperationLog.ProcessError("≤‚ ‘»À‘±", HttpContext.GetUserIP(), ex.Message, ex);
+                throw;
+            }
         }
     }
 }

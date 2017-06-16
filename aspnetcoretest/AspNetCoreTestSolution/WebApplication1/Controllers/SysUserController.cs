@@ -6,7 +6,6 @@ using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.Interface;
 using NetCoreUtils;
-using NLog;
 using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers

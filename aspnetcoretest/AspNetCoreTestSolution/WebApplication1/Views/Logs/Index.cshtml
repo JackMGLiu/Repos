@@ -65,7 +65,7 @@
             <td>{{item.Request}}</td>
             <td>{{item.OperUser}}</td>
             <td>
-                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini" onclick="showInfo('查看日志信息','{{item.LogId}}');">查看</a>
+                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini" onclick="showInfo('查看日志信息','{{item.LogId}}');">详情</a>
                 <a href="javascript:void(0);" id="{{item.LogId}}" data-id="{{item.LogId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
             </td>
         </tr>
@@ -154,7 +154,6 @@
                             var gettpl = document.getElementById('tabletempl').innerHTML;
                             laytpl(gettpl).render(res,
                                 function (html) {
-                                    console.log(html);
                                     document.getElementById('utbody').innerHTML = html;
                                     form.render('checkbox');
                                 });
@@ -175,6 +174,32 @@
                 },
                 error: function (msg) {
                     console.log(msg);
+                }
+            });
+        }
+
+        function showInfo(title, key) {
+            layer.open({
+                type: 2,
+                title: title,
+                anim: 2,
+                content: '/sys/loginfo?key=' + key,
+                area: ['82%', '90%'],
+                maxmin: true,
+                full: function (elem) {
+                    var win = window.top === window.self ? window : parent.window;
+                    $(win).on('resize',
+                        function () {
+                            var $this = $(this);
+                            elem.width($this.width()).height($this.height()).css({
+                                top: 0,
+                                left: 0
+                            });
+                            elem.children('div.layui-layer-content').height($this.height() - 95);
+                        });
+                },
+                end: function () {
+                    bindGird();
                 }
             });
         }
