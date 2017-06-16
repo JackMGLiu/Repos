@@ -280,6 +280,7 @@
     <ProjectReference Include="..\NetCoreModel\NetCoreModel.csproj" />
     <ProjectReference Include="..\NetCoreRepository\NetCoreRepository.csproj" />
     <ProjectReference Include="..\NetCoreService\NetCoreService.csproj" />
+    <ProjectReference Include="..\NetCoreUtils\NetCoreUtils.csproj" />
   </ItemGroup>
 
 </Project>
