@@ -1,0 +1,38 @@
+
+@{
+    ViewData["Title"] = "TypeIndex";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@section scripts
+{
+    <script>
+        var msgloading;
+        var form;
+        var laytpl;
+        layui.use(['form'],
+            function() {
+                
+            });
+    </script>
+}
+<div class="admin-main">
+    <div class="layui-field-box layui-form">
+        <table id="menus" class="layui-table table-hover">
+            <thead>
+                <tr>
+                    <th>目录名称</th>
+                    <th>目录图标</th>
+                    <th>是否顶级</th>
+                    <th>排列序号</th>
+                    <th>目录状态</th>
+                    <th>链接地址</th>
+                    <th>说明</th>
+                    <th>添加时间</th>
+                    <th>添加人员</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="utbody"></tbody>
+        </table>
+    </div>
+</div>

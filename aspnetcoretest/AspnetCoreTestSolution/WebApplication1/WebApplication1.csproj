@@ -23,6 +23,12 @@
     <Content Include="wwwroot\images\defaulthead.jpg" />
     <Content Include="wwwroot\images\icon-arrow.png" />
     <Content Include="wwwroot\images\icon_arrow.png" />
+    <Content Include="wwwroot\images\left_menuForOutLook.gif">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\images\left_menuForOutLook.png">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="wwwroot\images\loading-b.gif" />
     <Content Include="wwwroot\images\loading-s.gif" />
     <Content Include="wwwroot\images\loading.gif" />
@@ -268,6 +274,7 @@
     <Folder Include="Views\HelloWorld\" />
     <Folder Include="Views\SysDataDict\" />
     <Folder Include="Views\SysMenu\" />
+    <Folder Include="Views\Logs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetCoreModel\NetCoreModel.csproj" />

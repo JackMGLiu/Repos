@@ -1,0 +1,241 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>日志管理</title>
+    <link type="text/css" href="~/css/main.css" rel="stylesheet" />
+    <link href="~/css/global.css" rel="stylesheet" />
+    <link href="~/layui/layui/css/layui.css" rel="stylesheet" />
+    <link type="text/css" href="~/lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link type="text/css" href="~/css/table.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="admin-main">
+        <blockquote class="layui-elem-quote">
+            <a href="#" class="layui-btn layui-btn-small" id="delete">
+                <i class="fa fa-minus-circle" aria-hidden="true"></i> 删除信息
+            </a>
+            <a href="javascript:;" class="layui-btn layui-btn-small" id="search">
+                <i class="fa fa-search" aria-hidden="true"></i> 搜索
+            </a>
+        </blockquote>
+        <div class="layui-field-box layui-form">
+            <table id="logs" class="layui-table table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="checkalla" lay-skin="primary" lay-filter="allChoose" /></th>
+                        <th>记录时间</th>
+                        <th>日志级别</th>
+                        <th>访问动作</th>
+                        <th>访问地址</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="utbody"></tbody>
+            </table>
+            <div id="pagediv" class="page" style="text-align: right;"></div>
+        </div>
+        @*<div class="admin-table-page">
+                <div id="pagediv" class="page"></div>
+            </div>*@
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/layui/layui/lay/dest/layui.all.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script id="tabletempl" type="text/html">
+        {{#  layui.each(d.Items, function(index, item){ }}
+        <tr>
+            <td><input type="checkbox" name="logcheck" id={{item.LogId}} lay-skin="primary" /></td>
+            <td>{{item.CreateDate}}</td>
+            <td>{{item.LogLevel}}</td>
+            <td>{{item.Action}}</td>
+            <td>{{item.Request}}</td>
+            <td>
+                <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini" onclick="showInfo('查看日志信息','{{item.LogId}}');">查看</a>
+                <a href="javascript:void(0);" id="{{item.LogId}}" data-id="{{item.LogId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>
+            </td>
+        </tr>
+        {{#  }); }}
+    </script>
+    <script>
+        var msgloading;
+        var layer;
+        var form;
+        var laytpl;
+        var laypage;
+        layui.use(['laypage', 'layer', 'form', 'laytpl'],
+            function () {
+                laypage = layui.laypage;
+                layer = layui.layer;
+                form = layui.form();
+                laytpl = layui.laytpl;
+                //layer = parent.layer === undefined ? layui.layer : parent.layer;
+
+                //全选
+                form.on('checkbox(allChoose)',
+                    function (data) {
+                        var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]');
+                        child.each(function (index, item) {
+                            item.checked = data.elem.checked;
+                        });
+                        form.render('checkbox');
+                    });
+
+                //批量删除
+                $('#delete').click(function () {
+                    var chk_value = [];
+                    $('input[name="logcheck"]:checked').each(function () {
+                        chk_value.push($(this).attr('id'));
+                    });
+                    if (chk_value.length !== 0) {
+                        layer.confirm('是否要删除这<span style="color: red; font-weight: bold;">&nbsp;' +
+                            chk_value.length +
+                            '&nbsp;</span>条数据？',
+                            {
+                                title: '删除确认',
+                                btn: ['删除', '取消']
+                            },
+                            function () {
+                                layer.msg('已删除！', { icon: 1 });
+                            },
+                            function () {
+                                return;
+                            });
+                    } else {
+                        layer.alert('您还没有选择数据！',
+                            {
+                                icon: 0,
+                                title: '提示信息'
+                            });
+                    }
+                });
+
+                $('#search').on('click',
+                    function () {
+                        layer.alert('你点击了搜索按钮');
+                    });
+
+                /***初始化***/
+                bindGird();
+            });
+
+        function bindGird(obj) {
+            $.ajax({
+                url: '/sys/loglist',
+                data: { 'page': obj == null ? 1 : obj.curr },
+                cache: false,
+                beforeSend: function () {
+                    msgloading = layer.msg('正在加载数据...',
+                        {
+                            icon: 16,
+                            shade: 0.01
+                        });
+                },
+                complete: function () {
+                    layer.close(msgloading);
+                },
+                success: function (res) {
+                    if (res.Items) {
+                        if (res.Items.length > 0) {
+                            var gettpl = document.getElementById('tabletempl').innerHTML;
+                            laytpl(gettpl).render(res,
+                                function (html) {
+                                    console.log(html);
+                                    document.getElementById('utbody').innerHTML = html;
+                                    form.render('checkbox');
+                                });
+                        }
+                    }
+                    laypage({
+                        cont: 'pagediv',
+                        pages: res.TotalPageCount, //总页数
+                        curr: res.CurrentPage, //当前页
+                        groups: 5, //连续显示分页数
+                        jump: function (obj, first) {
+                            //var curr = obj.curr;
+                            if (!first) {
+                                bindGird(obj);
+                            }
+                        }
+                    });
+                },
+                error: function (msg) {
+                    console.log(msg);
+                }
+            });
+        }
+
+        //delete
+        function delObj(obj) {
+            var key = obj.getAttribute('id');
+            if (!$.isNullOrEmpty(key)) {
+                layer.confirm('是否要删除这条数据？',
+                    {
+                        title: '删除确认',
+                        btn: ['删除', '取消']
+                    },
+                    function () {
+                        //执行删除操作
+                        $.ajax({
+                            type: 'post',
+                            url: '/sysuser/delete',
+                            data: { 'key': key },
+                            cache: false,
+                            beforeSend: function () {
+                                msgloading = layer.msg('正在删除数据...',
+                                    {
+                                        icon: 16,
+                                        shade: 0.01
+                                    });
+                            },
+                            complete: function () {
+                                layer.close(msgloading);
+                            },
+                            success: function (res) {
+                                if (res.type == 1) {
+                                    layer.alert(res.msg, bindGird);
+                                } else {
+                                    layer.alert(res.msg,
+                                        {
+                                            icon: 2,
+                                            title: '提示信息'
+                                        });
+                                }
+                            },
+                            error: function (msg) {
+                                layer.alert('系统错误，请重试！',
+                                    {
+                                        icon: 2,
+                                        title: '提示信息'
+                                    });
+                            }
+
+                        },
+                            function () {
+                                return;
+                            });
+                    });
+            } else {
+                layer.alert('数据是否存在？请刷新页面重试！',
+                    {
+                        icon: 0,
+                        title: '提示信息'
+                    });
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>

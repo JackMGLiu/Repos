@@ -128,15 +128,6 @@ namespace WebApplication1.Controllers
                 isnav = s.IsNav,
                 islast = s.IsLast
             });
-            //var data = DataTypeList().Where(dt => dt.IsNav == 1).OrderBy(d => d.SortCode).Select(s => new TreeModel
-            //{
-            //    id = s.DictTypeId,
-            //    code = s.DictTypeCode,
-            //    parentid = s.ParentId,
-            //    name = s.DictTypeName,
-            //    isnav = s.IsNav,
-            //    islast = s.IsLast
-            //});
             return Json(data);
         }
 
