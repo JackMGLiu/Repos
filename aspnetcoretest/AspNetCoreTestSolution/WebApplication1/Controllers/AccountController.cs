@@ -8,5 +8,11 @@ namespace WebApplication1.Controllers
         {
             return View();
         }
+
+        [HttpPost("account/userlogin")]
+        public IActionResult UserLogin()
+        {
+            return Json("");
+        }
     }
 }

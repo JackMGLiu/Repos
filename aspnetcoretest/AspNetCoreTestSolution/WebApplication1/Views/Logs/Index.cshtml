@@ -38,8 +38,7 @@
                         <th><input type="checkbox" id="checkalla" lay-skin="primary" lay-filter="allChoose" /></th>
                         <th>记录时间</th>
                         <th>日志级别</th>
-                        <th>访问动作</th>
-                        <th>访问地址</th>
+                        <th>日志信息</th>
                         <th>操作人</th>
                         <th>操作</th>
                     </tr>
@@ -61,8 +60,7 @@
             <td><input type="checkbox" name="logcheck" id={{item.LogId}} lay-skin="primary" /></td>
             <td>{{item.CreateDate}}</td>
             <td>{{item.LogLevel}}</td>
-            <td>{{item.Action}}</td>
-            <td>{{item.Request}}</td>
+            <td>{{item.Message}}</td>
             <td>{{item.OperUser}}</td>
             <td>
                 <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini" onclick="showInfo('查看日志信息','{{item.LogId}}');">详情</a>

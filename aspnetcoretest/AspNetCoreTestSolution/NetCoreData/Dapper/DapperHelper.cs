@@ -293,7 +293,7 @@ namespace NetCoreData.Dapper
             }
         }
 
-        public long GetCount(string sql, params DbParameter[] parmeters)
+        public long GetCount(string sql, object parmeters = null)
         {
             try
             {

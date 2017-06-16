@@ -1,5 +1,6 @@
 ﻿using NetCoreData.Models;
 using NetCoreModel;
+using NetCoreService.DTO;
 
 namespace NetCoreService.Interface
 {
@@ -41,5 +42,15 @@ namespace NetCoreService.Interface
         /// <param name="pageSize"></param>
         /// <returns></returns>
         PageDataView<SysUser> GetPageList(string username, int page, int pageSize);
+
+        /// <summary>
+        /// 用户登陆
+        /// </summary>
+        /// <param name="username">用户名</param>
+        /// <param name="userpass">密码</param>
+        /// <param name="msg">返回信息</param>
+        /// <param name="viewModel">返回实体类</param>
+        /// <returns></returns>
+        bool UserLogin(string username, string userpass, out string msg, out SysUserViewModel viewModel);
     }
 }

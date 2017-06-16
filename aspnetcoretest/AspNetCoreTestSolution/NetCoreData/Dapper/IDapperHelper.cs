@@ -37,7 +37,7 @@ namespace NetCoreData.Dapper
 
         PageDataView<T> GetPageData<T>(PageCriteria criteria, object param = null);
 
-        long GetCount(string sql, params DbParameter[] parmeters);
+        long GetCount(string sql, object parmeters = null);
 
         #endregion
 

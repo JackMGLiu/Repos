@@ -121,7 +121,7 @@ namespace WebApplication1
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Main}/{action=SysMain}/{id?}");
+                    template: "{controller=Account}/{action=Login}/{id?}");
             });
         }
 
