@@ -274,11 +274,13 @@
     <Folder Include="Views\HelloWorld\" />
     <Folder Include="Views\SysDataDict\" />
     <Folder Include="Views\SysMenu\" />
+    <Folder Include="Views\Logs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetCoreModel\NetCoreModel.csproj" />
     <ProjectReference Include="..\NetCoreRepository\NetCoreRepository.csproj" />
     <ProjectReference Include="..\NetCoreService\NetCoreService.csproj" />
+    <ProjectReference Include="..\NetCoreUtils\NetCoreUtils.csproj" />
   </ItemGroup>
 
 </Project>

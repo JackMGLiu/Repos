@@ -6,18 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.Interface;
+using NetCoreUtils;
 using NLog;
+using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
     public class SysMenuController : Controller
     {
         private List<MenuModel> menudata = null;
-
-        /// <summary>
-        /// 日志类
-        /// </summary>
-        protected Logger _log;
 
         protected IMapper _mapper { get; set; }
 
@@ -28,7 +25,6 @@ namespace WebApplication1.Controllers
         public SysMenuController(IMapper mapper,ISysMenuService sysMenuService)
         {
             menudata = new List<MenuModel>();
-            this._log = LogManager.GetCurrentClassLogger();
             this._mapper = mapper;
             this._sysMenuService = sysMenuService;
         }
@@ -67,17 +63,20 @@ namespace WebApplication1.Controllers
                         var res = _sysMenuService.AddMenu(model);
                         if (res)
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加目录信息成功！MenuName=" + model.MenuName);
                             var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
                             return Json(json);
                         }
                         else
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加目录信息失败！MenuName=" + model.MenuName);
                             var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
                             return Json(json);
                         }
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "填写数据信息不完整！");
                         var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
                         return Json(json);
                     }
@@ -97,11 +96,13 @@ namespace WebApplication1.Controllers
                     var res = _sysMenuService.EditMenu(currentmodel);
                     if (res)
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑目录信息成功！MenuId=" + key);
                         var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
                         return Json(json);
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑目录信息失败！MenuId=" + key);
                         var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
                         return Json(json);
                     }
@@ -109,7 +110,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }
@@ -121,11 +122,12 @@ namespace WebApplication1.Controllers
             {
                 var model = _sysMenuService.GetSysMenuByKey(key);
                 var data = _mapper.Map<SysMenuViewModel>(model);
+                OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "查询目录信息成功！MenuId=" + key);
                 return Json(data);
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }

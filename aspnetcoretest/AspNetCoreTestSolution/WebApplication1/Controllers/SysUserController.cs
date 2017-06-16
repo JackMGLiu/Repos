@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.Interface;
+using NetCoreUtils;
 using NLog;
+using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
@@ -16,20 +18,14 @@ namespace WebApplication1.Controllers
         /// </summary>
         protected ISysUserService _sysUserService;
 
-        /// <summary>
-        /// 日志类
-        /// </summary>
-        protected Logger _log;
-
         protected IMapper _mapper { get; set; }
 
         /// <summary>
         /// 通用项目平台控制层实例
         /// </summary>
-        /// <param name="userService">业务仓储类</param>
         public SysUserController(IMapper mapper, ISysUserService sysUserService)
         {
-            _log = LogManager.GetCurrentClassLogger();
+            //_log = LogManager.GetCurrentClassLogger();
             _mapper = mapper;
             _sysUserService = sysUserService;
         }
@@ -60,18 +56,21 @@ namespace WebApplication1.Controllers
                         var res = _sysUserService.AddUser(model);
                         if (res)
                         {
-                            var json = new {type = 1, data = "", msg = "添加完成！", backurl = ""};
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加用户信息成功！UserName=" + model.UserName);
+                            var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
                             return Json(json);
                         }
                         else
                         {
-                            var json = new {type = 0, data = "", msg = "添加失败！", backurl = ""};
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加用户信息失败！UserName=" + model.UserName);
+                            var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
                             return Json(json);
                         }
                     }
                     else
                     {
-                        var json = new {type = 2, data = "", msg = "请填写完整数据！", backurl = ""};
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "填写数据信息不完整！");
+                        var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
                         return Json(json);
                     }
                 }
@@ -99,11 +98,13 @@ namespace WebApplication1.Controllers
                     var res = _sysUserService.EditUser(currentmodel);
                     if (res)
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑用户信息成功！UserId=" + key);
                         var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
                         return Json(json);
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑用户信息失败！UserId=" + key);
                         var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
                         return Json(json);
                     }
@@ -111,7 +112,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }
@@ -131,11 +132,13 @@ namespace WebApplication1.Controllers
                     var res = _sysUserService.DeleteUser(key);
                     if (res)
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "删除用户信息成功！UserId=" + key);
                         var json = new { type = 1, data = "", msg = "删除完成！", backurl = "" };
                         return Json(json);
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "删除用户信息失败！UserId=" + key);
                         var json = new { type = 0, data = "", msg = "删除失败！", backurl = "" };
                         return Json(json);
                     }
@@ -143,7 +146,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }
@@ -155,11 +158,12 @@ namespace WebApplication1.Controllers
             {
                 var model = _sysUserService.GetSysUserByKey(key);
                 var data = _mapper.Map<SysUserViewModel>(model);
+                OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "查询用户信息成功！UserId=" + key);
                 return Json(data);
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }

@@ -16,5 +16,7 @@ namespace NetCoreModel
         public string Message { get; set; }
         public string Exception { get; set; }
         public string StackTrace { get; set; }
+        public string OperUser { get; set; }
+        public string IpAddress { get; set; }
     }
 }

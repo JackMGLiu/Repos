@@ -40,6 +40,7 @@
                         <th>日志级别</th>
                         <th>访问动作</th>
                         <th>访问地址</th>
+                        <th>操作人</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -62,6 +63,7 @@
             <td>{{item.LogLevel}}</td>
             <td>{{item.Action}}</td>
             <td>{{item.Request}}</td>
+            <td>{{item.OperUser}}</td>
             <td>
                 <a href="javascript:void(0);" target="_blank" class="layui-btn layui-btn-normal layui-btn-mini" onclick="showInfo('查看日志信息','{{item.LogId}}');">查看</a>
                 <a href="javascript:void(0);" id="{{item.LogId}}" data-id="{{item.LogId}}" class="layui-btn layui-btn-danger layui-btn-mini" onclick="delObj(this);">删除</a>

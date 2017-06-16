@@ -7,15 +7,14 @@ using NetCoreModel;
 using NetCoreService.DTO;
 using NetCoreService.DTO.FormatModel;
 using NetCoreService.Interface;
-using NLog;
+using NetCoreUtils;
+using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
     public class SysDataDictController : Controller
     {
         private List<DictTypeModel> dictTypeData = null;
-
-        protected Logger _log;
 
         protected IMapper _mapper { get; set; }
 
@@ -26,7 +25,6 @@ namespace WebApplication1.Controllers
         public SysDataDictController(IMapper mapper, IDictTypeService dictTypeService, IDictDetailService dictDetailService)
         {
             dictTypeData = new List<DictTypeModel>();
-            this._log = LogManager.GetCurrentClassLogger();
             this._mapper = mapper;
             this._dictTypeService = dictTypeService;
             this._dictDetailService = dictDetailService;
@@ -60,17 +58,20 @@ namespace WebApplication1.Controllers
                         var res = _dictTypeService.AddDictType(model);
                         if (res)
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加字典类型信息成功！DictTypeId=" + model.DictTypeId);
                             var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
                             return Json(json);
                         }
                         else
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加字典类型信息失败！DictTypeId=" + model.DictTypeId);
                             var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
                             return Json(json);
                         }
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "填写数据信息不完整！");
                         var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
                         return Json(json);
                     }
@@ -90,11 +91,13 @@ namespace WebApplication1.Controllers
                     var res = _dictTypeService.EditDictType(currentmodel);
                     if (res)
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑字典类型信息失败！DictTypeId=" + key);
                         var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
                         return Json(json);
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑字典类型信息失败！DictTypeId=" + key);
                         var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
                         return Json(json);
                     }
@@ -102,7 +105,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }
@@ -154,17 +157,20 @@ namespace WebApplication1.Controllers
                         var res = _dictDetailService.AddDictDetail(model);
                         if (res)
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加字典明细信息成功！ItemName=" + model.ItemName);
                             var json = new { type = 1, data = "", msg = "添加完成！", backurl = "" };
                             return Json(json);
                         }
                         else
                         {
+                            OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "添加字典明细信息失败！ItemName=" + model.ItemName);
                             var json = new { type = 0, data = "", msg = "添加失败！", backurl = "" };
                             return Json(json);
                         }
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "填写数据信息不完整！");
                         var json = new { type = 2, data = "", msg = "请填写完整数据！", backurl = "" };
                         return Json(json);
                     }
@@ -186,11 +192,13 @@ namespace WebApplication1.Controllers
                     var res = _dictDetailService.EditDictDetail(currentmodel);
                     if (res)
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑字典明细信息失败！DictDetailId=" + key);
                         var json = new { type = 1, data = "", msg = "编辑完成！", backurl = "" };
                         return Json(json);
                     }
                     else
                     {
+                        OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "编辑字典明细信息失败！DictDetailId=" + key);
                         var json = new { type = 0, data = "", msg = "编辑失败！", backurl = "" };
                         return Json(json);
                     }
@@ -198,7 +206,7 @@ namespace WebApplication1.Controllers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }
@@ -217,11 +225,12 @@ namespace WebApplication1.Controllers
             {
                 var model = _dictDetailService.GetDictDetailByKey(key);
                 var data = _mapper.Map<DictDetailViewModel>(model);
+                OperationLog.ProcessInfo("测试人员", HttpContext.GetUserIP(), "查询字典明细信息成功！DictDetailId=" + key);
                 return Json(data);
             }
             catch (Exception ex)
             {
-                _log.Error(ex, ex.Message);
+                OperationLog.ProcessError("测试人员", HttpContext.GetUserIP(), ex.Message, ex);
                 throw;
             }
         }

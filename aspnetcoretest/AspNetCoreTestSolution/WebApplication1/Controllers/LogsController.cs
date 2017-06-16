@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreService.Interface;
-using NLog;
 
 namespace WebApplication1.Controllers
 {
@@ -15,14 +10,8 @@ namespace WebApplication1.Controllers
         /// </summary>
         protected ILogsService _logsService;
 
-        /// <summary>
-        /// »’÷æ¿‡
-        /// </summary>
-        protected Logger _log;
-
         public LogsController(ILogsService logsService)
         {
-            _log = LogManager.GetCurrentClassLogger();
             _logsService = logsService;
         }
 
