@@ -139,7 +139,7 @@ namespace NetCoreService.Impl
                 if (count > 0)
                 {
                     string selectsql = "select * from SysUser where UserName=@UserName and IsDelete=0";
-                    var currentmodel = _sysUserRepository.GetModelBySql(sql, new { UserName = username });
+                    var currentmodel = _sysUserRepository.GetModelBySql(selectsql, new { UserName = username });
                     if (currentmodel.Status != 1)
                     {
                         viewModel = null;
