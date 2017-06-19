@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -63,6 +64,7 @@ namespace WebApplication1
             //services.AddSingleton<IConfiguration>(Configuration);
 
             //注释业务处理模块，for sql server
+            services.AddSingleton<ITestRepository>(new TestRepository(CreateDbConnection()));
             services.AddSingleton<IUserRepository>(new UserRepository(CreateDbConnection()));
             services.AddSingleton<ISysUserRepository>(new SysUserRepository(CreateDbConnection()));
             services.AddSingleton<ISysMenuRepository>(new SysMenuRepository(CreateDbConnection()));
@@ -70,6 +72,7 @@ namespace WebApplication1
             services.AddSingleton<IDictDetailRepository>(new DictDetailRepository(CreateDbConnection()));
             services.AddSingleton<ILogsRepository>(new LogsRepository(CreateDbConnection()));
 
+            services.AddSingleton<ITestService, TestService>();
             services.AddSingleton<IUserService,UserService>();
             services.AddSingleton<ISysUserService, SysUserService>();
             services.AddSingleton<ISysMenuService, SysMenuService>();
@@ -146,6 +149,9 @@ namespace WebApplication1
             {
                 case "msssql":
                     connection = new SqlConnection(defaultConnection);
+                    break;
+                case "sqlite":
+                    connection = new SqliteConnection(defaultConnection);
                     break;
             }
             return connection;

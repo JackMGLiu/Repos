@@ -40,8 +40,8 @@ namespace NetCoreService
         {
             try
             {
-                string sql = "select count(1) from UserTwo";
-                return _userRepository.GetCount(sql,null);
+                string sql = "select count(*) from test";
+                return _userRepository.GetCount(sql);
             }
             catch (Exception ex)
             {
