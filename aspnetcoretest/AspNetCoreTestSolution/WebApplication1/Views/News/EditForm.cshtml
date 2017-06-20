@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewData["Title"] = "新闻信息表单";
+    Layout = "~/Views/Shared/_FormLayout.cshtml";
+}
+@section scripts
+{
+<script src="~/lib/ueditor/ueditor.config.js"></script>
+<script src="~/lib/ueditor/ueditor.all.min.js"></script>
+<script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script>
+        var msgloading;
+        var form;
+        var ue;
+        layui.use(['form'],
+            function () {
+                form = layui.form();
+
+                form.on('switch(switchStatus)',
+                    function (data) {
+                        var ischeck = data.elem.checked;
+                        if (ischeck) {
+                            $('#Status').val(1);
+                        } else {
+                            $('#Status').val(0);
+                        }
+                    });
+            });
+
+        $(document).ready(function() {
+            UE.delEditor('editor');
+            ue = UE.getEditor('editor');
+        });
+    </script>
+}
+<div style="margin: 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>请填写数据信息</legend>
+    </fieldset>
+    <form id="form1" class="layui-form" method="post" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章类型：</label>
+            <div class="layui-input-inline">
+                <input type="hidden" id="NewsId" name="NewsId" />
+                <select id="NewsType" name="NewsType" lay-verify="required">
+                    <option value="">请选择文章类型</option>
+                    <option value="1">新闻</option>
+                    <option value="2">公告</option>
+                </select>
+            </div>
+            <label class="layui-form-label">发布状态：</label>
+            <div class="layui-input-inline">
+                <select id="NewsStatus" name="NewsStatus" lay-verify="required">
+                    <option value="">请选择发布状态</option>
+                    <option value="1">立即发布</option>
+                    <option value="2">手动发布</option>
+                </select>
+            </div>
+            <label class="layui-form-label">当前状态：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" id="Status" name="Status" lay-skin="switch" lay-filter="switchStatus" title="当前状态" lay-text="启用|禁用" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章标题：</label>
+            <div class="layui-input-block">
+                <input type="text" id="NewsTitle" name="NewsTitle" autocomplete="off" lay-verify="required" placeholder="请输入文章标题" class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章内容：</label>
+            <div class="layui-input-block">
+                <script id="editor" type="text/plain" style="height:480px;">
+                </script>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="savedata">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

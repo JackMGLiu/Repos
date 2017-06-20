@@ -16,6 +16,7 @@ using NetCoreService.Impl;
 using NetCoreService.Interface;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using UEditorNetCore;
 using WebApplication1.Codes;
 using WebApplication1.Model;
 
@@ -79,6 +80,10 @@ namespace WebApplication1
             services.AddSingleton<IDictTypeService, DictTypeService>();
             services.AddSingleton<IDictDetailService, DictDetailService>();
             services.AddSingleton<ILogsService, LogsService>();
+
+            //第一个参数为配置文件路径，默认为项目目录下config.json
+            //第二个参数为是否缓存配置文件，默认false
+            services.AddUEditorService();
 
             // Add framework services.
             //services.AddMvc();
