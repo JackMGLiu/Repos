@@ -6,7 +6,7 @@ using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
-    public class LogsController : Controller
+    public class LogsController : BaseController
     {
         /// <summary>
         /// ÒµÎñ²Ö´¢Àà

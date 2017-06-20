@@ -9,6 +9,7 @@
     "font-awesome": "fontawesome#v4.7.0",
     "jquery-form": "v4.2.1",
     "iCheck": "1.0.2",
-    "zTree": "v3.5.28"
+    "zTree": "v3.5.28",
+    "ueditor": "v1.4.3.3"
   }
 }

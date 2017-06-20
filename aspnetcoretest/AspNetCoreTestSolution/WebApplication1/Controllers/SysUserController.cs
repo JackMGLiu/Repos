@@ -10,7 +10,7 @@ using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
-    public class SysUserController : Controller
+    public class SysUserController : BaseController
     {
         /// <summary>
         /// ÒµÎñ²Ö´¢Àà

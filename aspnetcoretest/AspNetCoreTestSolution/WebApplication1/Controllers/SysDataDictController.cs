@@ -12,7 +12,7 @@ using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
-    public class SysDataDictController : Controller
+    public class SysDataDictController : BaseController
     {
         private List<DictTypeModel> dictTypeData = null;
 

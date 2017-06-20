@@ -7,7 +7,7 @@ using WebApplication1.Codes;
 
 namespace WebApplication1.Controllers
 {
-    public class MainController : Controller
+    public class MainController : BaseController
     {
         /// <summary>
         /// ÒµÎñ²Ö´¢Àà

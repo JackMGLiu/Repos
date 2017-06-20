@@ -1,9 +1,6 @@
 using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreService.DTO;
@@ -25,7 +22,6 @@ namespace WebApplication1.Controllers
             _sysUserService = sysUserService;
         }
 
-        [AllowAnonymous]
         public IActionResult Login()
         {
             //if (!HttpContext.User.Identity.IsAuthenticated)

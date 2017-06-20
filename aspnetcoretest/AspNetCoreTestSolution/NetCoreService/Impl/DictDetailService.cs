@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using NetCoreModel;
 using NetCoreRepository.Interface;
 using NetCoreService.Interface;

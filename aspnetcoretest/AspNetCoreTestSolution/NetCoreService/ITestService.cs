@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using NetCoreModel;
-
-namespace NetCoreService
+﻿namespace NetCoreService
 {
     public interface ITestService
     {
