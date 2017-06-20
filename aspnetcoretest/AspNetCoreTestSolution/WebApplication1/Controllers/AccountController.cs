@@ -1,4 +1,9 @@
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreService.DTO;
 using NetCoreService.Interface;
@@ -18,8 +23,21 @@ namespace WebApplication1.Controllers
             _mapper = mapper;
             _sysUserService = sysUserService;
         }
+
         public IActionResult Login()
         {
+            //if (!HttpContext.User.Identity.IsAuthenticated)
+            //{
+            //    //把返回地址保存在前台的hide表单中
+            //    ViewBag.returnUrl = returnUrl;
+            //}
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var loginName = HttpContext.User.Identity.Name;
+                ViewBag.UserName = loginName;
+                ViewBag.Rember = true;
+            }
+            HttpContext.Authentication.SignOutAsync("member");
             return View();
         }
 
@@ -34,16 +52,27 @@ namespace WebApplication1.Controllers
                 var res = _sysUserService.UserLogin(loginModel.UserName, loginModel.UserPass, out returnmsg, out model);
                 if (res)
                 {
+
+                    HttpContext.Authentication.SignOutAsync("member");
+                    if (loginModel.IsRember)  //保存cookie
+                    {
+                        var identity = new ClaimsIdentity("Forms");     // 指定身份认证类型
+                        identity.AddClaim(new Claim(ClaimTypes.Sid, model.UserId));  // 用户Id
+                        identity.AddClaim(new Claim(ClaimTypes.Name, model.UserName));       // 用户名称
+                        var principal = new ClaimsPrincipal(identity);
+                        HttpContext.Authentication.SignInAsync("member", principal, new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTime.UtcNow.AddMinutes(60) });  //过期时间60分钟
+                    }
+                    //HttpContext.Session.SetString("userlogindata", model.UserId);
                     OperationLog.ProcessInfo(loginModel.UserName, HttpContext.GetUserIP(),
                         "用户登陆成功！UserName=" + model.UserName);
-                    var json = new {type = 1, data = model, msg = returnmsg, backurl = "/Main/SysMain"};
+                    var json = new { type = 1, data = model, msg = returnmsg, backurl = "/Main/SysMain" };
                     return Json(json);
                 }
                 else
                 {
                     OperationLog.ProcessInfo(loginModel.UserName, HttpContext.GetUserIP(),
                         "用户登陆失败！UserName=" + loginModel.UserName);
-                    var json = new {type = 0, data = "", msg = returnmsg, backurl = ""};
+                    var json = new { type = 0, data = "", msg = returnmsg, backurl = "" };
                     return Json(json);
                 }
             }
@@ -51,7 +80,7 @@ namespace WebApplication1.Controllers
             {
                 OperationLog.ProcessInfo("登陆用户", HttpContext.GetUserIP(),
                     "用户登陆信息有误！");
-                var json = new {type = 2, data = "", msg = returnmsg, backurl = ""};
+                var json = new { type = 2, data = "", msg = returnmsg, backurl = "" };
                 return Json(json);
             }
         }

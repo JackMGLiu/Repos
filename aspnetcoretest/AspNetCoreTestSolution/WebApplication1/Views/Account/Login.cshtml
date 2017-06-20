@@ -29,7 +29,7 @@
                 <label class="login-icon">
                     <i class="layui-icon">&#xe612;</i>
                 </label>
-                <input type="text" id="UserName" name="UserName" lay-verify="userName" autocomplete="off" placeholder="这里输入登陆名称" class="layui-input" />
+                <input type="text" id="UserName" name="UserName" lay-verify="userName" autocomplete="off" placeholder="这里输入登陆名称" class="layui-input" value="@ViewBag.UserName" />
             </div>
             <div class="layui-form-item">
                 <label class="login-icon">
@@ -40,8 +40,17 @@
             <div class="layui-form-item">
                 <div class="pull-left login-remember">
                     <label>记住帐号？</label>
+                    @if (ViewBag.Rember == true)
+                    {
+                        <input type="checkbox" id="IsRember" name="IsRember" lay-skin="switch" lay-filter="switchRember" title="记住帐号" lay-text="是|否" checked="checked" />
+                        <div class="layui-unselect layui-form-switch"><i></i>
+                        </div>
+                    }
+                    else
+                    {
+                        <input type="checkbox" id="IsRember" name="IsRember" lay-skin="switch" lay-filter="switchRember" title="记住帐号" lay-text="是|否" /><div class="layui-unselect layui-form-switch"><i></i></div>
+                    }
 
-                    <input type="checkbox" id="IsRember" name="IsRember" value="true" lay-skin="switch" lay-filter="switchRember" title="记住帐号" lay-text="是|否"><div class="layui-unselect layui-form-switch"><i></i></div>
                 </div>
                 <div class="pull-right">
                     <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="login">
@@ -69,9 +78,9 @@
                 function (data) {
                     var ischeck = data.elem.checked;
                     if (ischeck) {
-                        $('#IsRember').val(1);
+                        $('#IsRember').val(true);
                     } else {
-                        $('#IsRember').val(0);
+                        $('#IsRember').val(false);
                     }
                 });
 
@@ -139,7 +148,7 @@
                     dataType: 'json',
                     data: data.field,
                     beforeSend: function () {
-                        msgloading = layer.msg('正在保存数据...',
+                        msgloading = layer.msg('正在登陆，请稍后...',
                             {
                                 icon: 16,
                                 shade: 0.01

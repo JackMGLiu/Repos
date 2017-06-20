@@ -120,6 +120,16 @@ namespace WebApplication1
 
             app.UseStaticFiles();
 
+            //cookie中间件需放置到UseMvc前 Microsoft.AspNetCore.Authentication.Cookies
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AuthenticationScheme = "member",  //认证方案：这是一个已知中间件的值，当有多个实例的中间件如果你想限制授权到一个实例时这个选项将会起作用。
+                LoginPath = "/Account/Login",  //登录路径：这是当用户试图访问资源但未经过身份验证时，程序将会将请求重定向到这个相对路径。
+                //AccessDeniedPath = "", //禁止访问路径：当用户试图访问资源时，但未通过该资源的任何授权策略，请求将被重定向到这个相对路径。
+                AutomaticAuthenticate = true, //自动认证：这个标志表明中间件应该会在每个请求上进行验证和重建他创建的序列化主体。
+                AutomaticChallenge = true //自动挑战：这个标志标明当中间件认证失败时应该重定向浏览器到登录路径或者禁止访问路径。
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
