@@ -5,9 +5,11 @@
 }
 @section scripts
 {
-<script src="~/lib/ueditor/ueditor.config.js"></script>
-<script src="~/lib/ueditor/ueditor.all.min.js"></script>
-<script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script src="~/lib/jquery-form/dist/jquery.form.min.js"></script>
+    <script src="~/js/utils.js"></script>
+    <script src="~/lib/ueditor/ueditor.config.js"></script>
+    <script src="~/lib/ueditor/ueditor.all.min.js"></script>
+    <script src="~/lib/ueditor/lang/zh-cn/zh-cn.js"></script>
     <script>
         var msgloading;
         var form;
@@ -25,11 +27,42 @@
                             $('#Status').val(0);
                         }
                     });
+
+
+                form.on('submit(savedata)',
+                    function (data) {
+                        //var key = $.request('key');
+                        $(this).ajaxSubmit({
+                            type: 'post',
+                            url: '/news/savedata',
+                            dataType: 'json',
+                            data: data.field,
+                            beforeSend: function () {
+                                data.field.PushContent = ue.getContent();
+                                msgloading = layer.msg('正在保存数据...',
+                                    {
+                                        icon: 16,
+                                        shade: 0.01
+                                    });
+                            },
+                            complete: function () {
+                                layer.close(msgloading);
+                            },
+                            success: function (res) {
+                                if (res.type == 1) {
+                                    layer.alert(res.msg);
+                                } else {
+                                    layer.alert(res.msg);
+                                }
+                            }
+                        });
+                        return false;
+                    });
             });
 
-        $(document).ready(function() {
-            UE.delEditor('editor');
-            ue = UE.getEditor('editor');
+        $(document).ready(function () {
+            UE.delEditor('PushContent');
+            ue = UE.getEditor('PushContent');
         });
     </script>
 }
@@ -42,7 +75,7 @@
             <label class="layui-form-label">文章类型：</label>
             <div class="layui-input-inline">
                 <input type="hidden" id="NewsId" name="NewsId" />
-                <select id="NewsType" name="NewsType" lay-verify="required">
+                <select id="NewsTypeId" name="NewsTypeId" lay-verify="required">
                     <option value="">请选择文章类型</option>
                     <option value="1">新闻</option>
                     <option value="2">公告</option>
@@ -70,7 +103,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">文章内容：</label>
             <div class="layui-input-block">
-                <script id="editor" type="text/plain" style="height:480px;">
+                <script id="PushContent" type="text/plain" style="height:480px;">
                 </script>
             </div>
         </div>

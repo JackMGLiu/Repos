@@ -101,9 +101,10 @@ namespace NetCoreModel
         /// </summary>
         public DateTime? PublishTime { get; set; }
 
+        public int NewsStatus { get; set; }
+
         public int Status { get; set; }
         public int IsDelete { get; set; }
-        public int? SortCode { get; set; }
         public string Description { get; set; }
         public DateTime? CreateTime { get; set; }
         public string CreateUser { get; set; }
