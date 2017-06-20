@@ -71,6 +71,8 @@ namespace WebApplication1
             services.AddSingleton<ISysMenuRepository>(new SysMenuRepository(CreateDbConnection()));
             services.AddSingleton<IDictTypeRepository>(new DictTypeRepository(CreateDbConnection()));
             services.AddSingleton<IDictDetailRepository>(new DictDetailRepository(CreateDbConnection()));
+            services.AddSingleton<INewsTypeRepository>(new NewsTypeRepository(CreateDbConnection()));
+            services.AddSingleton<INewsInfoRepository>(new NewsInfoRepository(CreateDbConnection()));
             services.AddSingleton<ILogsRepository>(new LogsRepository(CreateDbConnection()));
 
             services.AddSingleton<ITestService, TestService>();
@@ -79,6 +81,8 @@ namespace WebApplication1
             services.AddSingleton<ISysMenuService, SysMenuService>();
             services.AddSingleton<IDictTypeService, DictTypeService>();
             services.AddSingleton<IDictDetailService, DictDetailService>();
+            services.AddSingleton<INewsTypeService, NewsTypeService>();
+            services.AddSingleton<INewsInfoService, NewsInfoService>();
             services.AddSingleton<ILogsService, LogsService>();
 
             //第一个参数为配置文件路径，默认为项目目录下config.json
