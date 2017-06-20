@@ -2,6 +2,7 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,7 @@ namespace WebApplication1.Controllers
             _sysUserService = sysUserService;
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             //if (!HttpContext.User.Identity.IsAuthenticated)
@@ -62,7 +64,8 @@ namespace WebApplication1.Controllers
                         var principal = new ClaimsPrincipal(identity);
                         HttpContext.Authentication.SignInAsync("member", principal, new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTime.UtcNow.AddMinutes(60) });  //过期时间60分钟
                     }
-                    //HttpContext.Session.SetString("userlogindata", model.UserId);
+                    //记录Session
+                    HttpContext.Session.Set("CurrentUser", ByteConVertHelper.Object2Bytes(model.UserId));
                     OperationLog.ProcessInfo(loginModel.UserName, HttpContext.GetUserIP(),
                         "用户登陆成功！UserName=" + model.UserName);
                     var json = new { type = 1, data = model, msg = returnmsg, backurl = "/Main/SysMain" };

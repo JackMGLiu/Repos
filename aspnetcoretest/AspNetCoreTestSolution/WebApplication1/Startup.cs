@@ -91,6 +91,9 @@ namespace WebApplication1
                 //忽略循环引用
                 //op.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+
+            //Session服务
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,7 +109,8 @@ namespace WebApplication1
             // 指定NLog的配置文件
             env.ConfigureNLog("NLog.config");
 
-            app.UseRequestIP();//使用中间件
+            //app.UseRequestIP();//使用中间件
+            app.LoginValidate();
 
             if (env.IsDevelopment())
             {
@@ -119,6 +123,9 @@ namespace WebApplication1
             }
 
             app.UseStaticFiles();
+
+            //Session
+            app.UseSession();
 
             //cookie中间件需放置到UseMvc前 Microsoft.AspNetCore.Authentication.Cookies
             app.UseCookieAuthentication(new CookieAuthenticationOptions()

@@ -9,4 +9,15 @@ namespace WebApplication1.Codes
             return builder.UseMiddleware<RequestLoggerMiddleware>();
         }
     }
+
+    /// <summary>
+    /// 登陆验证中间件
+    /// </summary>
+    public static class LoginValidateExtensions
+    {
+        public static IApplicationBuilder LoginValidate(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<LoginMiddleware>();
+        }
+    }
 }
