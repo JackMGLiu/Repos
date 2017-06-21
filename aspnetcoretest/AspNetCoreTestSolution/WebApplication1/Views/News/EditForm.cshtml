@@ -32,13 +32,19 @@
                 form.on('submit(savedata)',
                     function (data) {
                         //var key = $.request('key');
+                        var fromdata = {
+                            'NewsTypeId': $('#NewsTypeId').val(),
+                            'NewsStatus': $('#NewsStatus').val(),
+                            'Status': $('#Status').val(),
+                            'NewsTitle': $('#NewsTitle').val(),
+                            'PushContent': ue.getContent()
+                        };
                         $(this).ajaxSubmit({
                             type: 'post',
                             url: '/news/savedata',
                             dataType: 'json',
-                            data: data.field,
+                            data: fromdata,
                             beforeSend: function () {
-                                data.field.PushContent = ue.getContent();
                                 msgloading = layer.msg('正在保存数据...',
                                     {
                                         icon: 16,
